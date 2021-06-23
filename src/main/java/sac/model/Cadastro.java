@@ -3,26 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sac.domain;
+package sac.model;
 
 /**
  *
  * @author geova
  */
-public class Produto {
+public class Cadastro {
     private int produto_id;
     private int categoria_id;
     private String nome;
     private String descricao;
     private float peso;
-
-    public Produto(int produto_id, int categoria_id, String nome, String descricao, float peso) {
-        this.produto_id = produto_id;
-        this.categoria_id = categoria_id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.peso = peso;
-    }
 
     public int getProduto_id() {
         return produto_id;
@@ -63,5 +55,6 @@ public class Produto {
     public void setPeso(float peso) {
         this.peso = peso;
     }
+    
     
 }

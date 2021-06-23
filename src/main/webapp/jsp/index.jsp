@@ -1,4 +1,5 @@
 <%@page import="sac.util.Erro"%>
+<%@page import="sac.domain.Usuario"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>        
@@ -13,9 +14,6 @@
             <div class="card">
                 <div class="card-body login-card-body">
                     <p class="login-box-msg">Entre para iniciar sua sessão</p>
-
-                    <jsp:useBean id="pessoa" scope="page" class="sac.model.Pessoa" />
-                    <jsp:setProperty name="pessoa" property="*" />
 
                     <form action="Login" method="post" id="login_form">
                         <div class="input-group mb-3">

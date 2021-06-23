@@ -60,9 +60,7 @@ public class EstadoDAO implements DAO<Estado> {
         ResultSet rs = null;
         try {
             ps = conn.createStatement();
-            rs = ps.executeQuery("select " + (top > 0
-                    ? "top " + top : "")
-                    + "estado_id, nome from estado where pais_id=1");
+            rs = ps.executeQuery("select estado_id, nome from estado where pais_id=1");
             lista = new ArrayList<>();
             while (rs.next()) {
                 lista.add(new Estado(rs.getInt("estado_id"), rs.getString("nome")));

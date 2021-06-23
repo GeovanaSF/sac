@@ -24,7 +24,7 @@ public class UsuarioDAO implements DAO<Usuario> {
 
     private static final String QUERY_INSERT = "INSERT INTO Usuario (email, senha, perfil_id) VALUES (?,?,?)";
 
-    private static final String QUERY_LIST = "SELECT id_pessoa, nm_pessoa, dt_pessoa FROM tb_pessoa";
+    private static final String QUERY_LIST = "SELECT usuario_id, email, senha, perfil_id from usuario";
 
     private static final String QUERY_GETSINGLE = "select usuario_id, email, senha, perfil_id from usuario where email = ?";
 
@@ -93,7 +93,7 @@ public class UsuarioDAO implements DAO<Usuario> {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = conn.prepareStatement(QUERY_LIST + "WHERE Id = ?");
+            ps = conn.prepareStatement(QUERY_LIST + "WHERE usuario_id = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {

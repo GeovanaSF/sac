@@ -21,6 +21,10 @@
         <servlet-name>AlterarDados</servlet-name>
         <servlet-class>sac.controller.AlterarDados</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Novo</servlet-name>
+        <servlet-class>sac.controller.Novo</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -41,6 +45,17 @@
     <servlet-mapping>
         <servlet-name>AlterarDados</servlet-name>
         <url-pattern>/AlterarDados</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Novo</servlet-name>
+        <url-pattern>/Novo_Categoria</url-pattern>
+        <url-pattern>/Novo_Produto</url-pattern>
+        <url-pattern>/Novo_Funcionario</url-pattern>
+        <url-pattern>/Novo_Atendimento</url-pattern>
+        <url-pattern>/Categoria</url-pattern>
+        <url-pattern>/Produto</url-pattern>
+        <url-pattern>/Funcionario</url-pattern>
+        <url-pattern>/Atendimento</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

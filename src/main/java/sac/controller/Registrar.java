@@ -48,7 +48,10 @@ public class Registrar extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, DAOException, SQLException {
         Erro erros = new Erro();
-
+        sac.model.Pessoa p = new sac.model.Pessoa();
+        
+        Connection connection = ConnectionFactory.getConnection();
+        
         if (request.getParameter("bRegistrar") != null) {
             String nome = request.getParameter("nome");
             String cpf = request.getParameter("cpf");
@@ -58,12 +61,18 @@ public class Registrar extends HttpServlet {
             String complemento = request.getParameter("complemento");
             String bairro = request.getParameter("bairro");
             String cep = request.getParameter("cep");
-            String estado = request.getParameter("estado");
-            Integer cidade = Integer.parseInt(request.getParameter("cidade"));
+            String estado = request.getParameter("estado_id");
+            String cidade_id = request.getParameter("cidade");
+            
+            Integer cidade = 0;
+            if (!cidade_id.isEmpty()) {
+                cidade = Integer.parseInt(cidade_id);
+            }
+            
             String email = request.getParameter("email");
             String password = request.getParameter("senha");
             String password_conf = request.getParameter("conf_senha");
-
+            
             if (email == null || email.isEmpty()) {
                 erros.add("'E-mail não informado!'");
             }
@@ -76,37 +85,67 @@ public class Registrar extends HttpServlet {
             if (!password.equals(password_conf)) {
                 erros.add("'Confirmação de senha inválida'");
             }
-
+            
+            UsuarioDAO daoUser = new UsuarioDAO(connection);
+            Usuario user = daoUser.getSingle(email);
+            if (user != null) {
+                erros.add("'E-mail já cadastrado'");
+            }
+            
             if (!erros.isExisteErros()) {
-                Connection connection = ConnectionFactory.getConnection();
-                Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]",""), 1);
-
-                UsuarioDAO daoUser = new UsuarioDAO(connection);
-                Usuario user = daoUser.getSingle(email);
+                Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), 1);
+                
                 if (user != null) {
                     pessoa.setUsuario_Id(user.getUsuario_Id());
                 } else {
                     user = new Usuario(email, password);
                     pessoa.setUsuario_Id(daoUser.insert(user));
                 }
-
+                
                 EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
                 Endereco endereco = new Endereco(cidade, rua, numero, complemento, bairro, cep);
                 pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
-
+                
                 PessoaDAO pessoaDAO = new PessoaDAO(connection);
                 int id = pessoaDAO.insert(pessoa);
-
+                
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/Login");
                 dispatcher.forward(request, response);
+            } else {
+                
+                p.setBairro(bairro);
+                p.setCep(cep);
+                p.setComplemento(complemento);
+                p.setEmail(email);
+                p.setNome(nome);
+                p.setNumero(numero);
+                p.setRua(rua);
+                p.setTelefone(telefone);
+                if (!estado.isEmpty()) {
+                    p.setEstado_id(Integer.parseInt(estado));
+                }
+                
+                p.setCidade_id(cidade);
             }
         }
         request.getSession().invalidate();
-
+        
         request.setAttribute("mensagens", erros);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/Login");
-        dispatcher.forward(request, response);
+        request.setAttribute("pessoa", p);
+        
+        EstadoDAO estadoDAO = new EstadoDAO(connection);
+        List<Estado> estados = estadoDAO.getList();
+        Estados e = new Estados(estados);
+        request.setAttribute("estados", e);
+        
+        String action = request.getServletPath();
+        if (action.equals("/Registrar")) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/register.jsp");
+            dispatcher.forward(request, response);
+        } else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/Login");
+            dispatcher.forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -121,9 +160,19 @@ public class Registrar extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         try {
-            processRequest(request, response);
+            //adicionar verificação de que se existe não precisa pesquisar de novo
+            Connection connection = ConnectionFactory.getConnection();
+            EstadoDAO estadoDAO = new EstadoDAO(connection);
+            List<Estado> estados = estadoDAO.getList();
+            Estados e = new Estados(estados);
+            request.setAttribute("estados", e);
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/register.jsp");
+            dispatcher.forward(request, response);
+
+//            processRequest(request, response);
         } catch (DAOException ex) {
             Logger.getLogger(Registrar.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {

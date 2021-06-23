@@ -1,8 +1,9 @@
 <%-- 
-    Document   : login
-    Created on : 03/06/2021, 16:48:09
+    Document   : novo_categoria
+    Created on : 03/06/2021, 20:54:59
     Author     : geova
 --%>
+
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -10,7 +11,7 @@
 <html lang="en">
     <head>        
         <jsp:include page="header.jsp" />
-        <title>SAC - Dashboard</title>
+        <title>SAC - Produto</title>
     </head>
     <body class="hold-transition layout-top-nav">
 
@@ -101,8 +102,11 @@
                 <div class="content-header">
                     <div class="container">
                         <div class="row mb-2">
-                            <div class="col-sm-6">
-                                <h3 class="m-0"> Dashboard</h3>
+                            <div class="col-sm-10">
+                                <h3 class="m-0"> Produto</h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a href="Novo_Produto" class="nav-link btn btn-primary">Novo </a>
                             </div>
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
@@ -113,81 +117,44 @@
                 <div class="content">
                     <div class="container">
                         <div class="row">
-
                             <sql:setDataSource var="conexao" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/db_sac" user="sac_user" password="sac_123" />
                             <!--CLIENTE: LISTA TODOS OS ATENDIMENTOS-->
-                            <c:if test="${usuarioLogado.perfil_Id == 1}"> 
-                                <sql:query dataSource="${conexao}" var="consulta">
-                                    select atendimento_id,datacriacao,datafinalizacao,produto_id,descricao from atendimento where cliente_id=${usuarioLogado.usuario_Id} order by dataCriacao
-                                </sql:query>
 
-                                <table class="table table-striped">
-                                    <thead>
+                            <sql:query dataSource="${conexao}" var="consulta">
+                                select p.produto_id as produto_id, p.nome as produto, p.descricao as descricao, c.nome as categoria 
+                                        from produto p 
+                                        join categoria c on p.categoria_id = c.categoria_id 
+                                        order by p.nome
+                            </sql:query>
+
+                            <table class="table table-striped col-12">
+                                <thead>
+                                    <tr>
+                                        <th class="col-1">#</th>
+                                        <th class="col-3">Produto</th>
+                                        <th class="col-3">Descrição</th>
+                                        <th class="col-2">Categoria</th>
+                                        <th class="col-2">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="item" items="${consulta.rows}">
                                         <tr>
-                                            <th style="width: 10px">#</th>
-                                            <th>Data Criação</th>
-                                            <th>Data Resolução</th>
-                                            <th>Produto</th>
-                                            <th>Descrição</th>
+                                            <td>${item.produto_id}</td>
+                                            <td>${item.produto}</td>
+                                            <td>${item.descricao}</td>
+                                            <td>${item.categoria}</td>
+                                            <td></td>       
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="item" items="${consulta.rows}">
-                                            <tr>
-                                                <td>${item.atendimento_id}</td>
-                                                <td>${item.datacriacao}</td>
-                                                <td>${item.datafinalizacao}</td>
-                                                <td>${item.produto_id}</td>
-                                                <td>${item.descricao}</td>       
-                                            </tr>
-                                        </c:forEach>
-                                        <c:if test="${fn: length(consulta.rows)==0}">
-                                            <tr>
-                                                <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
-                                            </tr>
-                                        </c:if>
-                                    </tbody>
-                                </table>
-                            </c:if>
-
-                            <!--FUNCIONARIO: LISTA TODOS OS ATENDIMENTOS NÃO RESOLVIDOS-->
-                            <c:if test="${usuarioLogado.perfil_Id == 2}"> 
-                                <sql:query dataSource="${conexao}" var="consulta">
-                                    select atendimento_id,datacriacao,datafinalizacao,produto_id,descricao from atendimento where datafinalizacao is null order by dataCriacao
-                                </sql:query>
-
-                                <table class="table table-striped">
-                                    <thead>
+                                    </c:forEach>
+                                    <c:if test="${fn: length(consulta.rows)==0}">
                                         <tr>
-                                            <th style="width: 10px">#</th>
-                                            <th>Data Criação</th>
-                                            <th>Data Resolução</th>
-                                            <th>Produto</th>
-                                            <th>Descrição</th>
+                                            <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="item" items="${consulta.rows}">
-                                            <tr>
-                                                <td>${item.atendimento_id}</td>
-                                                <td>${item.datacriacao}</td>
-                                                <td>${item.datafinalizacao}</td>
-                                                <td>${item.produto_id}</td>
-                                                <td>${item.descricao}</td>       
-                                            </tr>
-                                        </c:forEach>
-                                        <c:if test="${fn: length(consulta.rows)==0}">
-                                            <tr>
-                                                <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
-                                            </tr>
-                                        </c:if>
-                                    </tbody>
-                                </table>
-                            </c:if>
-                            <!--GERENTE: INFORMA QUANTIDADE DE ATENDIMENTOS EFETUADOS; QTD DE ATEND ABERTOS COM PERCENTAGEM EM RELAÇÃO AO TOTAL; SEPARADOS POR CATEGORIA-->
-                            <c:if test="${usuarioLogado.perfil_Id == 3}"> 
-                                mais complicado a listagem
-                            </c:if>
+                                    </c:if>
+                                </tbody>
+                            </table>
+
                         </div>
                         <!-- /.row -->
                     </div><!-- /.container-fluid -->
@@ -201,15 +168,6 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
-
-        <script type="text/javascript">
-            $(function () {
-                $('[data-mask]').inputmask();
-//                $(".ignore-click").click(function () {
-//                    return false;
-//                });
-            });
-        </script>
 
     </body>
 </html>
