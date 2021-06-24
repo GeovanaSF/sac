@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @author geova
  */
 public class Pessoa implements Serializable{
+    private int pessoa_id;
     private String nome;
     private String cpf;
     private String telefone;
@@ -25,6 +26,14 @@ public class Pessoa implements Serializable{
     private String complemento;
     private String bairro;
     private String cep;
+
+    public int getPessoa_id() {
+        return pessoa_id;
+    }
+
+    public void setPessoa_id(int pessoa_id) {
+        this.pessoa_id = pessoa_id;
+    }
 
     public String getNome() {
         return nome;

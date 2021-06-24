@@ -1,8 +1,9 @@
 <%-- 
-    Document   : novo_categoria
-    Created on : 03/06/2021, 20:54:59
+    Document   : funcionario
+    Created on : 23/06/2021, 21:31:37
     Author     : geova
 --%>
+
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -11,7 +12,7 @@
 <html lang="en">
     <head>        
         <jsp:include page="header.jsp" />
-        <title>SAC - Produto</title>
+        <title>SAC - Funcionários/Gerentes</title>
     </head>
     <body class="hold-transition layout-top-nav">
 
@@ -103,10 +104,10 @@
                     <div class="container">
                         <div class="row mb-2">
                             <div class="col-sm-10">
-                                <h3 class="m-0"> Produto</h3>
+                                <h3 class="m-0"> Funcionários/Gerentes</h3>
                             </div>
                             <div class="col-sm-2">
-                                <a href="Produto" class="nav-link btn btn-default">Voltar</a>
+                                <a href="Novo_Funcionario" class="nav-link btn btn-primary">Novo </a>
                             </div>
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
@@ -116,52 +117,48 @@
                 <!-- Main content -->
                 <div class="content">
                     <div class="container">
-                        <form class="" action="Novo_Produto" method="post">
-                            <div class="row">
-                                <jsp:useBean id="cadastro" class="sac.model.Cadastro" scope="request">
-                                    <jsp:setProperty name="cadastro" property="*" />
-                                </jsp:useBean>
-                                <div class="col-5"><!-- comment -->
-                                    <!-- comment -->
-                                    <div class="input-group mb-1 col-12">
-                                        <input type="hidden" id="categoria_id" name="produto_id" value="${cadastro.produto_id}">
-                                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome produto" value="${cadastro.nome}">
+                        <div class="row">
+                            <sql:setDataSource var="conexao" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/db_sac" user="sac_user" password="sac_123" />
+                            <!--GERENTE: LISTA TODOS OS FUNCIONARIOS-->
 
-                                    </div>
-                                    <div class="input-group mb-1 col-12">
-                                        <input type="text" class="form-control" id="peso" name="peso" placeholder="Peso" value="${cadastro.peso==0 ? "" : cadastro.peso}">
-                                    </div>
-                                </div>
-                                <div class="input-group mb-1 col-5">
-                                    <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" value="${cadastro.descricao}"></textarea>
-                                </div>
+                            <sql:query dataSource="${conexao}" var="consulta">
+                                select p.pessoa_id as id, p.nome as nome, p.cpf as cpf, p.telefone as telefone, u.email as email, pf.nome as perfil 
+                                    from pessoa p
+                                    join usuario u on p.usuario_id = u.usuario_id
+                                    join perfil pf on p.perfil_id = pf.perfil_id
+                                    where u.perfil_id <> 1
+                            </sql:query>
 
-                                <div class="input-group mb-1 col-5">
-                                    <jsp:useBean id="categorias" class="sac.model.Categorias" scope="request"/>
+                            <table class="table table-striped col-12">
+                                <thead>
+                                    <tr>
+                                        <th class="col-1">#</th>
+                                        <th class="col-2">Nome</th>
+                                        <th class="col-2">E-mail</th>
+                                        <th class="col-2">Perfil</th>
+                                        <th class="col-2">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="item" items="${consulta.rows}">
+                                        <tr>
+                                            <td>${item.id}</td>
+                                            <td>${item.nome}</td>
+                                            <td>${item.email}</td>
+                                            <td>${item.perfil}</td>
+                                            <td></td>       
+<!--                                            Se id==usuarioLogado_id desabilitado-->
+                                        </tr>
+                                    </c:forEach>
+                                    <c:if test="${fn: length(consulta.rows)==0}">
+                                        <tr>
+                                            <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
+                                        </tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
 
-                                    <select class="custom-select" id="categoria_id" name="categoria_id" value="${cadastro.categoria_id}" placeholder="Categoria" style="margin: auto 2%;">
-                                        <c:if test="${cadastro.categoria_id == 0}">
-                                            <option selected="selected">Selecione categoria</option>    
-                                        </c:if>
-                                        <c:if test="${cadastro.categoria_id != 0}">
-                                            <option>Selecione</option>    
-                                        </c:if>
-                                        <c:forEach var="categoria" items="${categorias.getCategorias()}">
-
-                                            <c:if test="${cadastro.categoria_id == categoria.categoria_id}">
-                                                <option selected="selected">Selecione</option>    
-                                            </c:if>
-                                            <option value="${categoria.categoria_id}">${categoria.nome}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                                <div class="input-group mb-1 col-5">
-                                </div>
-                                <div class="col-2">
-                                    <button type="submit" name="bRegistrar" value="registrar" class="btn btn-primary btn-block">Salvar</button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                         <!-- /.row -->
                     </div><!-- /.container-fluid -->
                 </div>
@@ -177,3 +174,5 @@
 
     </body>
 </html>
+
+

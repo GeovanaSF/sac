@@ -100,36 +100,39 @@
                         <div class="input-group mb-1 col-6">
 
                             <jsp:useBean id="estados" class="sac.model.Estados" scope="request"/>
-                            
+
                             <select class="custom-select form-control-border" id="estado_id" name="estado_id" value="${pessoa.estado_id}" placeholder="Estado">
                                 <c:if test="${pessoa.estado_id == 0}">
-                                    <option selected="selected">Selecione</option>    
+                                    <option selected="selected">Selecione o estado</option>    
                                 </c:if>
                                 <c:if test="${pessoa.estado_id != 0}">
                                     <option>Selecione</option>    
                                 </c:if>
                                 <c:forEach var="estado" items="${estados.getEstados()}">
-                                    
-                                <c:if test="${pessoa.estado_id == estado.estado_id}">
-                                    <option selected="selected">Selecione</option>    
-                                </c:if>
+
+                                    <c:if test="${pessoa.estado_id == estado.estado_id}">
+                                        <option selected="selected">Selecione o estado</option>    
+                                    </c:if>
                                     <option value="${estado.estado_id}">${estado.nome}</option>
                                 </c:forEach>
                             </select>
 <!--                            <input class="form-control" type="text" id="estado" name="estado" placeholder="Estado" value="${pessoa.estado_id}">-->
-<!--                            <div class="input-group-append">
-                                <div class="input-group-text">
-                                    <span class="far fa-address-book"></span>
-                                </div>
-                            </div>-->
+                            <!--                            <div class="input-group-append">
+                                                            <div class="input-group-text">
+                                                                <span class="far fa-address-book"></span>
+                                                            </div>
+                                                        </div>-->
                         </div>
                         <div class="input-group mb-1 col-6">
-                            <input class="form-control" type="text" id="cidade" name="cidade" placeholder="Cidade">
-                            <div class="input-group-append">
-                                <div class="input-group-text">
-                                    <span class="far fa-address-book"></span>
-                                </div>
-                            </div>
+                            <select class="custom-select form-control-border" id="cidade_id" name="cidade_id" value="${pessoa.cidade_id}" placeholder="Cidade">
+                                <option selected="selected">Selecione a cidade</option>
+                            </select>
+                            <!--                            <input class="form-control" type="text" id="cidade" name="cidade" placeholder="Cidade">
+                                                        <div class="input-group-append">
+                                                            <div class="input-group-text">
+                                                                <span class="far fa-address-book"></span>
+                                                            </div>
+                                                        </div>-->
                         </div>
 
                         <div class="input-group mb-1 col-12">
@@ -185,6 +188,20 @@
                         toastr.error(el)
                     })
                 }
+
+                $("#estado_id").on("change", function () {
+                    var id = $(this).find(":selected").val();
+
+                    $.get("Cidade?estado_id=" + id, function (responseJson) {
+                        var $select = $("#cidade_id");
+                        $select.find("option").remove()
+                        $("<option>").val("").text("Selecione cidade").appendTo($select);
+
+                        $.each(responseJson, function (index, el) {
+                            $("<option>").val(el.cidade_id).text(el.nome).appendTo($select);
+                        });
+                    });
+                });
             });
         </script>
 

@@ -49,9 +49,9 @@ public class Registrar extends HttpServlet {
             throws ServletException, IOException, DAOException, SQLException {
         Erro erros = new Erro();
         sac.model.Pessoa p = new sac.model.Pessoa();
-        
+
         Connection connection = ConnectionFactory.getConnection();
-        
+
         if (request.getParameter("bRegistrar") != null) {
             String nome = request.getParameter("nome");
             String cpf = request.getParameter("cpf");
@@ -63,16 +63,16 @@ public class Registrar extends HttpServlet {
             String cep = request.getParameter("cep");
             String estado = request.getParameter("estado_id");
             String cidade_id = request.getParameter("cidade");
-            
+
             Integer cidade = 0;
             if (!cidade_id.isEmpty()) {
                 cidade = Integer.parseInt(cidade_id);
             }
-            
+
             String email = request.getParameter("email");
             String password = request.getParameter("senha");
             String password_conf = request.getParameter("conf_senha");
-            
+
             if (email == null || email.isEmpty()) {
                 erros.add("'E-mail não informado!'");
             }
@@ -85,34 +85,34 @@ public class Registrar extends HttpServlet {
             if (!password.equals(password_conf)) {
                 erros.add("'Confirmação de senha inválida'");
             }
-            
+
             UsuarioDAO daoUser = new UsuarioDAO(connection);
             Usuario user = daoUser.getSingle(email);
             if (user != null) {
                 erros.add("'E-mail já cadastrado'");
             }
-            
+
             if (!erros.isExisteErros()) {
                 Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), 1);
-                
+
                 if (user != null) {
                     pessoa.setUsuario_Id(user.getUsuario_Id());
                 } else {
                     user = new Usuario(email, password);
                     pessoa.setUsuario_Id(daoUser.insert(user));
                 }
-                
+
                 EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
                 Endereco endereco = new Endereco(cidade, rua, numero, complemento, bairro, cep);
                 pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
-                
+
                 PessoaDAO pessoaDAO = new PessoaDAO(connection);
                 int id = pessoaDAO.insert(pessoa);
-                
+
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/Login");
                 dispatcher.forward(request, response);
             } else {
-                
+
                 p.setBairro(bairro);
                 p.setCep(cep);
                 p.setComplemento(complemento);
@@ -124,22 +124,22 @@ public class Registrar extends HttpServlet {
                 if (!estado.isEmpty()) {
                     p.setEstado_id(Integer.parseInt(estado));
                 }
-                
+
                 p.setCidade_id(cidade);
             }
         }
         request.getSession().invalidate();
-        
+
         request.setAttribute("mensagens", erros);
         request.setAttribute("pessoa", p);
-        
-        EstadoDAO estadoDAO = new EstadoDAO(connection);
-        List<Estado> estados = estadoDAO.getList();
-        Estados e = new Estados(estados);
-        request.setAttribute("estados", e);
-        
+
         String action = request.getServletPath();
         if (action.equals("/Registrar")) {
+            EstadoDAO estadoDAO = new EstadoDAO(connection);
+            List<Estado> estados = estadoDAO.getList(1);
+            Estados e = new Estados(estados);
+            request.setAttribute("estados", e);
+
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/register.jsp");
             dispatcher.forward(request, response);
         } else {
@@ -160,15 +160,15 @@ public class Registrar extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         try {
             //adicionar verificação de que se existe não precisa pesquisar de novo
             Connection connection = ConnectionFactory.getConnection();
             EstadoDAO estadoDAO = new EstadoDAO(connection);
-            List<Estado> estados = estadoDAO.getList();
+            List<Estado> estados = estadoDAO.getList(1);
             Estados e = new Estados(estados);
             request.setAttribute("estados", e);
-            
+
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/register.jsp");
             dispatcher.forward(request, response);
 

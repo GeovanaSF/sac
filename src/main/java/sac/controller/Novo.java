@@ -19,10 +19,19 @@ import javax.servlet.http.HttpServletResponse;
 import sac.dao.CategoriaDAO;
 import sac.dao.ConnectionFactory;
 import sac.dao.DAOException;
+import sac.dao.EnderecoDAO;
+import sac.dao.EstadoDAO;
+import sac.dao.PessoaDAO;
 import sac.dao.ProdutoDAO;
+import sac.dao.UsuarioDAO;
 import sac.domain.Categoria;
+import sac.domain.Endereco;
+import sac.domain.Estado;
+import sac.domain.Pessoa;
 import sac.domain.Produto;
+import sac.domain.Usuario;
 import sac.model.Categorias;
+import sac.model.Estados;
 import sac.util.Erro;
 
 /**
@@ -46,6 +55,7 @@ public class Novo extends HttpServlet {
         String action = request.getServletPath();
         Erro erros = new Erro();
         sac.model.Cadastro cadastro = new sac.model.Cadastro();
+        sac.model.Pessoa p = new sac.model.Pessoa();
         String url = "";
 
         Connection connection = ConnectionFactory.getConnection();
@@ -119,6 +129,101 @@ public class Novo extends HttpServlet {
                 cadastro.setDescricao(descricao);
             }
         }
+        if (request.getParameter("bSalvar") != null) {
+            try {
+                String nome = request.getParameter("nome");
+                String cpf = request.getParameter("cpf");
+                String telefone = request.getParameter("telefone");
+                String rua = request.getParameter("rua");
+                String numero = request.getParameter("numero");
+                String complemento = request.getParameter("complemento");
+                String bairro = request.getParameter("bairro");
+                String cep = request.getParameter("cep");
+                String estado = request.getParameter("estado_id");
+                String cidade_id = request.getParameter("cidade");
+                String perfil = request.getParameter("perfil_id");
+                Integer cidade = 0;
+                if (!cidade_id.isEmpty()) {
+                    cidade = Integer.parseInt(cidade_id);
+                }
+
+                Integer perfil_id = 0;
+                if (!perfil.isEmpty()) {
+                    perfil_id = Integer.parseInt(perfil);
+                }
+
+                String email = request.getParameter("email");
+                String password = request.getParameter("senha");
+                String password_conf = request.getParameter("conf_senha");
+
+                if (nome == null || nome.isEmpty()) {
+                    erros.add("'Nome é obrigatório!'");
+                }
+                if (cpf == null || cpf.isEmpty()) {
+                    erros.add("'CPF é obrigatório!'");
+                }
+                if (perfil == null || perfil.isEmpty()) {
+                    erros.add("'Selecione um perfil!'");
+                }
+                if (email == null || email.isEmpty()) {
+                    erros.add("'E-mail não informado!'");
+                }
+                if (password == null || password.isEmpty()) {
+                    erros.add("'Senha não informada!'");
+                }
+                if (password_conf == null || password_conf.isEmpty()) {
+                    erros.add("'Senha não informada!'");
+                }
+                if (!password.equals(password_conf)) {
+                    erros.add("'Confirmação de senha inválida'");
+                }
+
+                UsuarioDAO daoUser = new UsuarioDAO(connection);
+                Usuario user = daoUser.getSingle(email);
+                if (user != null) {
+                    erros.add("'E-mail já cadastrado'");
+                }
+
+                if (!erros.isExisteErros()) {
+                    Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), perfil_id);
+
+                    if (user != null) {
+                        pessoa.setUsuario_Id(user.getUsuario_Id());
+                    } else {
+                        user = new Usuario(email, password);
+                        pessoa.setUsuario_Id(daoUser.insert(user));
+                    }
+
+                    EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
+                    Endereco endereco = new Endereco(cidade, rua, numero, complemento, bairro, cep);
+                    pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
+
+                    PessoaDAO pessoaDAO = new PessoaDAO(connection);
+                    int id = pessoaDAO.insert(pessoa);
+
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Funcionario");
+                    dispatcher.forward(request, response);
+                } else {
+
+                    p.setBairro(bairro);
+                    p.setCep(cep);
+                    p.setComplemento(complemento);
+                    p.setEmail(email);
+                    p.setNome(nome);
+                    p.setNumero(numero);
+                    p.setRua(rua);
+                    p.setTelefone(telefone);
+                    if (!estado.isEmpty()) {
+                        p.setEstado_id(Integer.parseInt(estado));
+                    }
+
+                    p.setCidade_id(cidade);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         if (url.isEmpty()) {
             if (action.equals("/Categoria")) {
                 url = "/jsp/categoria.jsp";
@@ -139,8 +244,19 @@ public class Novo extends HttpServlet {
                 }
 
                 url = "/jsp/novo_produto.jsp";
-            } else if (action.equals("/Funcionario")) {
+            } else if (action.equals("/Novo_Funcionario")) {
+                try {
+                    EstadoDAO estadoDAO = new EstadoDAO(connection);
+                    List<Estado> estados = estadoDAO.getList(1);
+                    Estados e = new Estados(estados);
+                    request.setAttribute("estados", e);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 url = "/jsp/novo_funcionario.jsp";
+            } else if (action.equals("/Funcionario")) {
+                url = "/jsp/funcionario.jsp";
             } else if (action.equals("/Atendimento")) {
                 url = "/jsp/novo_atendimento.jsp";
             }

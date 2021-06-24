@@ -18,6 +18,11 @@ public class Cidade implements Serializable{
     private Integer estado_id;
     private String nome;
 
+    public Cidade(Integer cidade_id, String nome) {
+        this.cidade_id = cidade_id;
+        this.nome = nome;
+    }
+
     public Integer getCidade_id() {
         return cidade_id;
     }

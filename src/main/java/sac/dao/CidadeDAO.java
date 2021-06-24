@@ -11,40 +11,36 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import sac.domain.Estado;
-import sac.domain.Usuario;
+import sac.domain.Cidade;
 
 /**
  *
  * @author geova
  */
-public class EstadoDAO {
-
-    private static final String QUERY_LIST = "SELECT id_pessoa, nm_pessoa, dt_pessoa FROM tb_pessoa";
-
+public class CidadeDAO {
+    
     private Connection conn;
     
-    public EstadoDAO(Connection conn) throws DAOException {
+    public CidadeDAO(Connection conn) throws DAOException {
         this.conn = conn;
     }
 
-    public List<Estado> getList(int pais_id) throws DAOException, SQLException {
+    public List<Cidade> getList(String estado_id) throws DAOException, SQLException {
         
-        List<Estado> lista = null;
+        List<Cidade> lista = null;
         Statement ps = null;
         ResultSet rs = null;
         try {
             ps = conn.createStatement();
-            rs = ps.executeQuery("select estado_id, nome from estado where pais_id=" + pais_id);
+            rs = ps.executeQuery("select cidade_id, nome from cidade where estado_id=" + estado_id);
             lista = new ArrayList<>();
             while (rs.next()) {
-                lista.add(new Estado(rs.getInt("estado_id"), rs.getString("nome")));
+                lista.add(new Cidade(rs.getInt("cidade_id"), rs.getString("nome")));
             }
         } catch (SQLException ex) {
         } catch (Exception ex) {
 
         } finally {
-            //conn.close();
         }
         return lista;
     }

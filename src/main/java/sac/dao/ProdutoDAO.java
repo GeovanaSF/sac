@@ -54,7 +54,7 @@ public class ProdutoDAO implements DAO<Produto>{
         if (top < 0) {
             return null;
         }
-        conn = ConnectionFactory.getConnection();
+        
         List<Produto> lista = null;
         Statement ps = null;
         ResultSet rs = null;
@@ -69,7 +69,7 @@ public class ProdutoDAO implements DAO<Produto>{
         } catch (Exception ex) {
 
         } finally {
-            conn.close();
+            //conn.close();
         }
         return lista;
     }
