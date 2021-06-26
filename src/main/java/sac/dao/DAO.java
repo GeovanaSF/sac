@@ -15,7 +15,6 @@ public interface DAO<T> {
     public T getById(int id) throws DAOException, SQLException;
     public T getSingle(String email) throws DAOException, SQLException;
     public List<T> getList() throws DAOException, SQLException;
-    public List<T> getList(int top) throws DAOException, SQLException;
     public Integer insert(T obj) throws DAOException, SQLException;
     public void update(T obj) throws DAOException, SQLException;
     public void remove(T obj) throws DAOException, SQLException;

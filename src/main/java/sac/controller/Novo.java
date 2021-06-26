@@ -140,8 +140,9 @@ public class Novo extends HttpServlet {
                 String bairro = request.getParameter("bairro");
                 String cep = request.getParameter("cep");
                 String estado = request.getParameter("estado_id");
-                String cidade_id = request.getParameter("cidade");
+                String cidade_id = request.getParameter("cidade_id");
                 String perfil = request.getParameter("perfil_id");
+                
                 Integer cidade = 0;
                 if (!cidade_id.isEmpty()) {
                     cidade = Integer.parseInt(cidade_id);
@@ -195,7 +196,7 @@ public class Novo extends HttpServlet {
                     }
 
                     EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
-                    Endereco endereco = new Endereco(cidade, rua, numero, complemento, bairro, cep);
+                    Endereco endereco = new Endereco(0, cidade, rua, numero, complemento, bairro, cep);
                     pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
 
                     PessoaDAO pessoaDAO = new PessoaDAO(connection);

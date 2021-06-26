@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 public class UsuarioDAO implements DAO<Usuario> {
 
     private static final String QUERY_INSERT = "INSERT INTO Usuario (email, senha, perfil_id) VALUES (?,?,?)";
+    private static final String QUERY_UPDATE = "UPDATE Usuario SET email=?, senha=?, perfil_id=? WHERE usuario_id=?";
+    private static final String QUERY_DELETE = "DELETE FROM Usuario WHERE usuario_id=?";
 
     private static final String QUERY_LIST = "SELECT usuario_id, email, senha, perfil_id from usuario";
 
@@ -36,8 +38,6 @@ public class UsuarioDAO implements DAO<Usuario> {
 
     @Override
     public Usuario getSingle(String login) throws DAOException, SQLException {
-//        Connection conn = ConnectionFactory.getConnection();
-
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -46,50 +46,34 @@ public class UsuarioDAO implements DAO<Usuario> {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new Usuario(rs.getInt("usuario_id"),
-                        rs.getString("email"), rs.getString("senha"),rs.getInt("perfil_id"));
+                        rs.getString("email"), rs.getString("senha"), rs.getInt("perfil_id"));
             }
         } catch (SQLException ex) {
-        } finally {
-//            conn.close();
         }
+
         return null;
     }
 
     @Override
     public List<Usuario> getList() throws DAOException, SQLException {
-        return getList(0);
-    }
-
-    @Override
-    public List<Usuario> getList(int top) throws DAOException, SQLException {
-        if (top < 0) {
-            return null;
-        }
-//        Connection conn = ConnectionFactory.getConnection();
-
         List<Usuario> lista = null;
         Statement ps = null;
         ResultSet rs = null;
         try {
             ps = conn.createStatement();
-            rs = ps.executeQuery("select " + (top > 0
-                    ? "top " + top : "")
-                    + "usuario_id, email, senha, perfil_id from usuario");
+            rs = ps.executeQuery("select usuario_id, email, senha, perfil_id from usuario");
             lista = new ArrayList<>();
             while (rs.next()) {
-                lista.add(new Usuario(rs.getInt("usuario_id"), rs.getString("email"), rs.getString("senha"),rs.getInt("perfil_id")));
+                lista.add(new Usuario(rs.getInt("usuario_id"), rs.getString("email"), rs.getString("senha"), rs.getInt("perfil_id")));
             }
         } catch (SQLException ex) {
         } finally {
-//            conn.close();
         }
         return lista;
     }
 
     @Override
     public Usuario getById(int id) throws DAOException, SQLException {
-//        Connection conn = ConnectionFactory.getConnection();
-
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -98,19 +82,16 @@ public class UsuarioDAO implements DAO<Usuario> {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new Usuario(rs.getInt("usuario_id"),
-                        rs.getString("email"), rs.getString("senha"),rs.getInt("perfil_id"));
+                        rs.getString("email"), rs.getString("senha"), rs.getInt("perfil_id"));
             }
         } catch (SQLException ex) {
-        } finally {
-//            conn.close();
         }
+
         return null;
     }
 
     @Override
     public Integer insert(Usuario obj) throws DAOException, SQLException {
-//        Connection conn = ConnectionFactory.getConnection();
-
         int key = 0;
 
         try {
@@ -128,8 +109,6 @@ public class UsuarioDAO implements DAO<Usuario> {
             }
         } catch (SQLException sQLException) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
-        } finally {
-//            conn.close();
         }
 
         return key;
@@ -137,12 +116,29 @@ public class UsuarioDAO implements DAO<Usuario> {
 
     @Override
     public void update(Usuario obj) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
+            stmt.setString(1, obj.getEmail());
+            stmt.setString(2, obj.getSenha());
+            stmt.setInt(3, obj.getPerfil_Id());
+            stmt.setInt(4, obj.getUsuario_Id());
+            stmt.executeUpdate();
+
+        } catch (SQLException sQLException) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+        }
     }
 
     @Override
     public void remove(Usuario obj) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_DELETE);
+            stmt.setInt(1, obj.getUsuario_Id());
+            stmt.executeUpdate();
+
+        } catch (SQLException sQLException) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+        }
     }
 
 }

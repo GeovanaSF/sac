@@ -118,7 +118,7 @@
                 <!-- Main content -->
                 <div class="content">
                     <div class="container">
-                        <form class="row" action="Nofo_Funcionario" method="post">
+                        <form class="row" action="Novo_Funcionario" method="post">
 
                             <jsp:useBean id="pessoa" class="sac.model.Pessoa" scope="request">
                                 <jsp:setProperty name="pessoa" property="*" />
@@ -298,7 +298,7 @@
                     $.get("Cidade?estado_id=" + id, function (responseJson) {
                         var $select = $("#cidade_id");
                         $select.find("option").remove()
-                        $("<option>").val("").text("Selecione cidade").appendTo($select);
+                        $("<option>").val("").text("Selecione a cidade").appendTo($select);
                         
                         $.each(responseJson, function (index, el) {
                             $("<option>").val(el.cidade_id).text(el.nome).appendTo($select);

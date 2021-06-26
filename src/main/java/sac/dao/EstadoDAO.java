@@ -28,8 +28,7 @@ public class EstadoDAO {
         this.conn = conn;
     }
 
-    public List<Estado> getList(int pais_id) throws DAOException, SQLException {
-        
+    public List<Estado> getList(int pais_id) throws DAOException, SQLException {        
         List<Estado> lista = null;
         Statement ps = null;
         ResultSet rs = null;
@@ -42,10 +41,8 @@ public class EstadoDAO {
             }
         } catch (SQLException ex) {
         } catch (Exception ex) {
-
-        } finally {
-            //conn.close();
-        }
+        } 
+        
         return lista;
     }
 }

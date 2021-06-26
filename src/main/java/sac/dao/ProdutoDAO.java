@@ -14,53 +14,82 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sac.domain.Estado;
 import sac.domain.Produto;
 
 /**
  *
  * @author geova
  */
-public class ProdutoDAO implements DAO<Produto>{
+public class ProdutoDAO implements DAO<Produto> {
 
     private static final String QUERY_INSERT = "INSERT INTO Produto (categoria_id, nome, descricao, peso) VALUES (?, ?, ?, ?)";
 
-    private static final String QUERY_LIST = "SELECT produto_id, nome, descricao, peso, categoria_id FROM produto";
+    private static final String QUERY_UPDATE = "UPDATE Produto SET categoria_id=?, nome=?, descricao=?, peso=? WHERE produto_id=?";
 
-    private static final String QUERY_GET = "select produto_id, nome, descricao, peso, categoria_id where produto_id = ?";
+    private static final String QUERY_REMOVE = "DELETE FROM Produto WHERE produto_id=?";
+
+    private static final String QUERY_GET = "SELECT produto_id, nome, descricao, peso, categoria_id FROM Produto";
 
     private Connection conn;
-    
+
     public ProdutoDAO(Connection conn) throws DAOException {
         this.conn = conn;
     }
+
     @Override
     public Produto getById(int id) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(QUERY_GET + "WHERE produto_id = ?");
+            ps.setInt(1, id);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"),
+                        rs.getString("nome"), rs.getString("descricao"),
+                        rs.getFloat("peso"));
+            }
+        } catch (SQLException ex) {
+        } catch (Exception ex) {
+
+        }
+
+        return null;
     }
 
     @Override
     public Produto getSingle(String email) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(QUERY_GET + "WHERE nome like '%?%'");
+            ps.setString(1, email);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"),
+                        rs.getString("nome"), rs.getString("descricao"),
+                        rs.getFloat("peso"));
+            }
+        } catch (SQLException ex) {
+        } catch (Exception ex) {
+
+        }
+
+        return null;
     }
 
     @Override
     public List<Produto> getList() throws DAOException, SQLException {
-        return getList(0);
-    }
-
-    @Override
-    public List<Produto> getList(int top) throws DAOException, SQLException {
-        if (top < 0) {
-            return null;
-        }
-        
         List<Produto> lista = null;
         Statement ps = null;
         ResultSet rs = null;
         try {
             ps = conn.createStatement();
-            rs = ps.executeQuery(QUERY_LIST);
+            rs = ps.executeQuery(QUERY_GET);
             lista = new ArrayList<>();
             while (rs.next()) {
                 lista.add(new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"), rs.getString("nome"), rs.getString("descricao"), rs.getFloat("peso")));
@@ -68,9 +97,8 @@ public class ProdutoDAO implements DAO<Produto>{
         } catch (SQLException ex) {
         } catch (Exception ex) {
 
-        } finally {
-            //conn.close();
         }
+
         return lista;
     }
 
@@ -94,8 +122,6 @@ public class ProdutoDAO implements DAO<Produto>{
             }
         } catch (SQLException sQLException) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
-        } finally {
-//            conn.close();
         }
 
         return key;
@@ -103,12 +129,28 @@ public class ProdutoDAO implements DAO<Produto>{
 
     @Override
     public void update(Produto obj) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
+            stmt.setInt(1, obj.getCategoria_id());
+            stmt.setString(2, obj.getNome());
+            stmt.setString(3, obj.getDescricao());
+            stmt.setFloat(4, obj.getPeso());
+            stmt.setInt(5, obj.getProduto_id());
+            stmt.executeUpdate();
+        } catch (SQLException sQLException) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+        }
     }
 
     @Override
     public void remove(Produto obj) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
+            stmt.setInt(1, obj.getProduto_id());
+            stmt.executeUpdate();
+        } catch (SQLException sQLException) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+        }
     }
-    
+
 }

@@ -17,6 +17,11 @@ public class Perfil implements Serializable{
     private Integer perfil_id;
     private String nome;
 
+    public Perfil(Integer perfil_id, String nome) {
+        this.perfil_id = perfil_id;
+        this.nome = nome;
+    }
+
     public Integer getPerfil_id() {
         return perfil_id;
     }

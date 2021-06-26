@@ -76,16 +76,7 @@ public class CategoriaDAO implements DAO<Categoria>{
     }
 
     @Override
-    public List<Categoria> getList() throws DAOException, SQLException {
-        return getList(0);
-    }
-
-    @Override
-    public List<Categoria> getList(int top) throws DAOException, SQLException {
-        if (top < 0) {
-            return null;
-        }
-        
+    public List<Categoria> getList() throws DAOException, SQLException {        
         List<Categoria> lista = null;
         Statement ps = null;
         ResultSet rs = null;
@@ -122,21 +113,33 @@ public class CategoriaDAO implements DAO<Categoria>{
             }
         } catch (SQLException sQLException) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
-        } finally {
-//            conn.close();
-        }
+        } 
 
         return key;
     }
 
     @Override
     public void update(Categoria obj) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
+            stmt.setString(1, obj.getNome());
+            stmt.setInt(2, obj.getCategoria_id());
+            stmt.executeUpdate();
+        } catch (SQLException sQLException) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+        } 
+
     }
 
     @Override
     public void remove(Categoria obj) throws DAOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
+            stmt.setInt(1, obj.getCategoria_id());
+            stmt.executeUpdate();
+        } catch (SQLException sQLException) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+        } 
     }
     
 }

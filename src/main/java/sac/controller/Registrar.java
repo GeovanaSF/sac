@@ -103,7 +103,7 @@ public class Registrar extends HttpServlet {
                 }
 
                 EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
-                Endereco endereco = new Endereco(cidade, rua, numero, complemento, bairro, cep);
+                Endereco endereco = new Endereco(0, cidade, rua, numero, complemento, bairro, cep);
                 pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
 
                 PessoaDAO pessoaDAO = new PessoaDAO(connection);
