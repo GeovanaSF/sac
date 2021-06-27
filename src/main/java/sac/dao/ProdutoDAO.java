@@ -40,20 +40,15 @@ public class ProdutoDAO implements DAO<Produto> {
     public Produto getById(int id) throws DAOException, SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement(QUERY_GET + "WHERE produto_id = ?");
-            ps.setInt(1, id);
+        ps = conn.prepareStatement(QUERY_GET + " WHERE produto_id = ?");
+        ps.setInt(1, id);
 
-            rs = ps.executeQuery();
+        rs = ps.executeQuery();
 
-            if (rs.next()) {
-                return new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"),
-                        rs.getString("nome"), rs.getString("descricao"),
-                        rs.getFloat("peso"));
-            }
-        } catch (SQLException ex) {
-        } catch (Exception ex) {
-
+        if (rs.next()) {
+            return new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"),
+                    rs.getString("nome"), rs.getString("descricao"),
+                    rs.getFloat("peso"));
         }
 
         return null;
@@ -143,10 +138,10 @@ public class ProdutoDAO implements DAO<Produto> {
     }
 
     @Override
-    public void remove(Produto obj) throws DAOException, SQLException {
+    public void remove(int id) throws DAOException, SQLException {
         try {
             PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
-            stmt.setInt(1, obj.getProduto_id());
+            stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);

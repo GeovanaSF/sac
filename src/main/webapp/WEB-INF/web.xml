@@ -33,9 +33,12 @@
         <servlet-name>Atendimento</servlet-name>
         <servlet-class>sac.controller.Atendimento</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Excluir</servlet-name>
+        <servlet-class>sac.controller.Excluir</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
-        <url-pattern>/</url-pattern>
         <url-pattern>/Login</url-pattern>
         <url-pattern>/Logout</url-pattern>
     </servlet-mapping>
@@ -70,8 +73,14 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Atendimento</servlet-name>
-        <url-pattern>/Atendimento</url-pattern>
+        <url-pattern>/TodosAtendimentos</url-pattern>
+        <url-pattern>/TodosAtendimentosAberto</url-pattern>
+        <url-pattern>/MeusAtendimentos</url-pattern>
         <url-pattern>/Novo_Atendimento</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Excluir</servlet-name>
+        <url-pattern>/Excluir</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

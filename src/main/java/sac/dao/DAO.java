@@ -17,5 +17,5 @@ public interface DAO<T> {
     public List<T> getList() throws DAOException, SQLException;
     public Integer insert(T obj) throws DAOException, SQLException;
     public void update(T obj) throws DAOException, SQLException;
-    public void remove(T obj) throws DAOException, SQLException;
+    public void remove(int id) throws DAOException, SQLException;
 }

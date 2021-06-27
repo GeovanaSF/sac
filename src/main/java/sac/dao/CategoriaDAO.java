@@ -20,39 +20,35 @@ import sac.domain.Categoria;
  *
  * @author geova
  */
-public class CategoriaDAO implements DAO<Categoria>{
+public class CategoriaDAO implements DAO<Categoria> {
 
     private static final String QUERY_INSERT = "INSERT INTO Categoria (nome) VALUES (?)";
-    
+
     private static final String QUERY_UPDATE = "UPDATE Categoria set nome=? WHERE categoria_id=?";
 
-    private static final String QUERY_REMOVE = "DELETE FROM Categoria (nome) WHERE categoria_id=?";
-    
+    private static final String QUERY_REMOVE = "DELETE FROM Categoria WHERE categoria_id=?";
+
     private static final String QUERY_LIST = "SELECT categoria_id, nome FROM categoria";
 
-    private static final String QUERY_GET = "select categoria_id, nome where categoria_id = ?";
-    
+    private static final String QUERY_GET = "select categoria_id, nome FROM categoria where categoria_id = ?";
+
     private static final String QUERY_GETSINGLE = "select categoria_id, nome where nome like '%?%'";
 
     private Connection conn;
-    
+
     public CategoriaDAO(Connection conn) throws DAOException {
         this.conn = conn;
     }
+
     @Override
-    public Categoria getById(int id) throws DAOException, SQLException {
+    public Categoria getById(int id) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement(QUERY_GET);
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return new Categoria(rs.getInt("categoria_id"), rs.getString("nome"));
-            }
-        } catch (SQLException ex) {
-        } finally {
-//            conn.close();
+        ps = conn.prepareStatement(QUERY_GET);
+        ps.setInt(1, id);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            return new Categoria(rs.getInt("categoria_id"), rs.getString("nome"));
         }
         return null;
     }
@@ -76,7 +72,7 @@ public class CategoriaDAO implements DAO<Categoria>{
     }
 
     @Override
-    public List<Categoria> getList() throws DAOException, SQLException {        
+    public List<Categoria> getList() throws DAOException, SQLException {
         List<Categoria> lista = null;
         Statement ps = null;
         ResultSet rs = null;
@@ -113,7 +109,7 @@ public class CategoriaDAO implements DAO<Categoria>{
             }
         } catch (SQLException sQLException) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
-        } 
+        }
 
         return key;
     }
@@ -127,19 +123,15 @@ public class CategoriaDAO implements DAO<Categoria>{
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
-        } 
+        }
 
     }
 
     @Override
-    public void remove(Categoria obj) throws DAOException, SQLException {
-        try {
-            PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
-            stmt.setInt(1, obj.getCategoria_id());
-            stmt.executeUpdate();
-        } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
-        } 
+    public void remove(int id) throws DAOException, SQLException {
+        PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
     }
-    
+
 }

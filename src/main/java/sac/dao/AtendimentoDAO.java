@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sac.domain.Atendimento;
 import sac.domain.Estado;
 import sac.model.Atendimentos;
@@ -25,16 +27,20 @@ public class AtendimentoDAO implements DAO<Atendimento> {
 
     private static final String QUERY_GETALL = "select \n"
             + "a.atendimento_id as id,\n"
-            + "c.nome as cliente,\n"
-            + "f.nome as funcionario,\n"
+            + "pc.nome as cliente,\n"
+            + "pf.nome as funcionario,\n"
             + "p.nome as produto,\n"
             + "ta.nome as tipoatendimento, \n"
-            + "a.dataCriacao as dataCriacao, \n"
-            + "a.dataFinalizacao as dataFinalizacao\n"
-            + "a.situacao as situacao\n"
+            + "to_char(a.dataCriacao, 'DD-MM-YYYY HH:mm:ss') as dataCriacao, \n"
+            + "to_char(a.dataFinalizacao, 'DD-MM-YYYY HH:mm:ss') as dataFinalizacao, \n"
+            + "a.situacao as situacao_id,"
+            + "case when a.situacao=1 then 'Aberto'"
+            + " when a.situacao=2 then 'Finalizado' end as situacao\n"
             + " from atendimento a\n"
-            + "join pessoa c on a.cliente_id=c.pessoa_id\n"
-            + "join pessoa f on a.funcionario_id=f.pessoa_id\n"
+            + "join usuario c on a.cliente_id=c.usuario_id\n"
+            + "join pessoa pc on c.usuario_id = pc.usuario_id\n"
+            + "left join usuario f on a.funcionario_id=f.usuario_id\n"
+            + "left join pessoa pf on f.usuario_id=pf.usuario_id\n"
             + "join produto p on a.produto_id = p.produto_id\n"
             + "join tipoatendimento ta on a.tipoatendimento_id=ta.tipoatendimento_id";
 
@@ -49,26 +55,25 @@ public class AtendimentoDAO implements DAO<Atendimento> {
     }
 
     @Override
-    public Atendimento getById(int id) throws DAOException, SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public Atendimento getById(int id) {
         try {
+            PreparedStatement ps = null;
+            ResultSet rs = null;
             ps = conn.prepareStatement(QUERY_GET + "WHERE usuario_id = ?");
             ps.setInt(1, id);
-            
-            rs = ps.executeQuery();
-            
-            if (rs.next()) {
-                return new Atendimento(rs.getInt("atendimento_id"),rs.getInt("cliente_id"),rs.getInt("funcionario_id"), 
-                        rs.getInt("produto_id"),rs.getInt("tipoatendimento_id"), rs.getDate("dataCriacao"),
-                        rs.getDate("dataFinalizacao"), rs.getInt("situacao"),
-                        rs.getString("descricao"),rs.getString("solucao"));
-            }
-        } catch (SQLException ex) {
-        } catch (Exception ex) {
 
-        } 
-        
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Atendimento(rs.getInt("atendimento_id"), rs.getInt("cliente_id"), rs.getInt("funcionario_id"),
+                        rs.getInt("produto_id"), rs.getInt("tipoatendimento_id"), rs.getTimestamp("dataCriacao"),
+                        rs.getTimestamp("dataFinalizacao"), rs.getInt("situacao"),
+                        rs.getString("descricao"), rs.getString("solucao"));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return null;
     }
 
@@ -87,134 +92,143 @@ public class AtendimentoDAO implements DAO<Atendimento> {
             rs = ps.executeQuery(QUERY_GET + " order by a.dataCriacao");
             lista = new ArrayList<>();
             while (rs.next()) {
-                lista.add(new Atendimento(rs.getInt("atendimento_id"),rs.getInt("cliente_id"),rs.getInt("funcionario_id"), 
-                        rs.getInt("produto_id"),rs.getInt("tipoatendimento_id"), rs.getDate("dataCriacao"),
-                        rs.getDate("dataFinalizacao"), rs.getInt("situacao"),
-                        rs.getString("descricao"),rs.getString("solucao")));
+                lista.add(new Atendimento(rs.getInt("atendimento_id"), rs.getInt("cliente_id"), rs.getInt("funcionario_id"),
+                        rs.getInt("produto_id"), rs.getInt("tipoatendimento_id"), rs.getTimestamp("dataCriacao"),
+                        rs.getTimestamp("dataFinalizacao"), rs.getInt("situacao"),
+                        rs.getString("descricao"), rs.getString("solucao")));
             }
         } catch (SQLException ex) {
         } catch (Exception ex) {
 
-        } 
+        }
         return lista;
     }
 
-    public List<Atendimentos> getListTodosAtendimentos() throws DAOException, SQLException {
-        List<Atendimentos> lista = null;
-        Statement ps = null;
-        ResultSet rs = null;
+    public List<Atendimentos> getListTodosAtendimentos() {
         try {
+            List<Atendimentos> lista = null;
+            Statement ps = null;
+            ResultSet rs = null;
             ps = conn.createStatement();
             rs = ps.executeQuery(QUERY_GETALL + " order by a.dataCriacao");
             lista = new ArrayList<>();
             while (rs.next()) {
                 lista.add(new Atendimentos(rs.getInt("id"), rs.getString("cliente"),
-                        rs.getString("funcionario"), rs.getDate("dataCriacao"),
-                        rs.getDate("dataFinalizacao"), rs.getString("produto"),
-                        rs.getInt("situacao")));
+                        rs.getString("funcionario"), rs.getString("dataCriacao"),
+                        rs.getString("dataFinalizacao"), rs.getString("produto"),
+                        rs.getString("situacao"),rs.getInt("situacao_id")));
             }
+            return lista;
         } catch (SQLException ex) {
-        } catch (Exception ex) {
-
-        } finally {
-            //conn.close();
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return lista;
+        return null;
     }
 
-    public List<Atendimentos> getListTodosAtendimentosAberto() throws DAOException, SQLException {
-        List<Atendimentos> lista = null;
-        Statement ps = null;
-        ResultSet rs = null;
+    public List<Atendimentos> getListTodosAtendimentosAberto() {
         try {
+            List<Atendimentos> lista = null;
+            Statement ps = null;
+            ResultSet rs = null;
             ps = conn.createStatement();
             rs = ps.executeQuery(QUERY_GETALL + " where a.situacao=1 order by a.dataCriacao");
             lista = new ArrayList<>();
             while (rs.next()) {
                 lista.add(new Atendimentos(rs.getInt("id"), rs.getString("cliente"),
-                        rs.getString("funcionario"), rs.getDate("datacriacao"),
-                        rs.getDate("datadinalizacao"), rs.getString("produto"),
-                        rs.getInt("situacao")));
+                        rs.getString("funcionario"), rs.getString("datacriacao"),
+                        rs.getString("dataFinalizacao"), rs.getString("produto"),
+                        rs.getString("situacao"),rs.getInt("situacao_id")));
             }
+            return lista;
         } catch (SQLException ex) {
-        } catch (Exception ex) {
-
-        } finally {
-            //conn.close();
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return lista;
+        return null;
     }
 
-    public List<Atendimentos> getListMeusAtendimentos(int usuario_id) throws DAOException, SQLException {
-        List<Atendimentos> lista = null;
-        Statement ps = null;
-        ResultSet rs = null;
+    public List<Atendimentos> getListMeusAtendimentos(int usuario_id) {
         try {
+            List<Atendimentos> lista = null;
+            Statement ps = null;
+            ResultSet rs = null;
             ps = conn.createStatement();
             rs = ps.executeQuery(QUERY_GETALL + " where c.usuario_id=" + usuario_id + " order by a.dataCriacao");
             lista = new ArrayList<>();
             while (rs.next()) {
                 lista.add(new Atendimentos(rs.getInt("id"), rs.getString("cliente"),
-                        rs.getString("funcionario"), rs.getDate("datacriacao"),
-                        rs.getDate("datadinalizacao"), rs.getString("produto"),
-                        rs.getInt("situacao")));
+                        rs.getString("funcionario"), rs.getString("datacriacao"),
+                        rs.getString("dataFinalizacao"), rs.getString("produto"),
+                        rs.getString("situacao"),rs.getInt("situacao_id")));
             }
-        } catch (SQLException ex) {
-        } catch (Exception ex) {
 
-        } finally {
-            //conn.close();
+            return lista;
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }catch (Exception ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return lista;
+        return null;
     }
 
     @Override
-    public Integer insert(Atendimento obj) throws DAOException, SQLException {
+    public Integer insert(Atendimento obj) {
         int key = 0;
+        try {
 
-        PreparedStatement stmt = conn.prepareStatement(QUERY_INSERT,
-                Statement.RETURN_GENERATED_KEYS);
-        stmt.setInt(1, obj.getCliente_id());
-        stmt.setInt(2, obj.getFuncionario_id());
-        stmt.setInt(3, obj.getProduto_id());
-        stmt.setInt(4, obj.getTipoatendimento_id());
-        stmt.setDate(5, obj.getDatacriacao());
-        stmt.setDate(6, obj.getDatafinalizacao());
-        stmt.setInt(7, obj.getSituacao());
-        stmt.setString(8, obj.getDescricao());
-        stmt.setString(9, obj.getSolucao());
-        stmt.executeUpdate();
+            PreparedStatement stmt = conn.prepareStatement(QUERY_INSERT,
+                    Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, obj.getCliente_id());
+            stmt.setObject(2, obj.getFuncionario_id());
+            stmt.setInt(3, obj.getProduto_id());
+            stmt.setInt(4, obj.getTipoatendimento_id());
+            stmt.setTimestamp(5, obj.getDatacriacaoTime());
+            stmt.setObject(6, obj.getDatafinalizacaoTime());
+            stmt.setInt(7, obj.getSituacao());
+            stmt.setString(8, obj.getDescricao());
+            stmt.setString(9, obj.getSolucao());
+            stmt.executeUpdate();
 
-        ResultSet rs = stmt.getGeneratedKeys();
-        if (rs.next()) {
-            // Retrieve the auto generated key(s).
-            key = rs.getInt(1);
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                // Retrieve the auto generated key(s).
+                key = rs.getInt(1);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return key;
     }
 
     @Override
-    public void update(Atendimento obj) throws DAOException, SQLException {
-        PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
-        stmt.setInt(1, obj.getCliente_id());
-        stmt.setInt(2, obj.getFuncionario_id());
-        stmt.setInt(3, obj.getProduto_id());
-        stmt.setInt(4, obj.getTipoatendimento_id());
-        stmt.setDate(5, obj.getDatacriacao());
-        stmt.setDate(6, obj.getDatafinalizacao());
-        stmt.setInt(7, obj.getSituacao());
-        stmt.setString(8, obj.getDescricao());
-        stmt.setString(9, obj.getSolucao());
-        stmt.setInt(10, obj.getAtendimento_id());
-        stmt.executeUpdate();
+    public void update(Atendimento obj) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
+            stmt.setInt(1, obj.getCliente_id());
+            stmt.setObject(2, obj.getFuncionario_id());
+            stmt.setInt(3, obj.getProduto_id());
+            stmt.setInt(4, obj.getTipoatendimento_id());
+            stmt.setTimestamp(5, obj.getDatacriacaoTime());
+            stmt.setObject(6, obj.getDatafinalizacaoTime());
+            stmt.setInt(7, obj.getSituacao());
+            stmt.setString(8, obj.getDescricao());
+            stmt.setString(9, obj.getSolucao());
+            stmt.setInt(10, obj.getAtendimento_id());
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
-    public void remove(Atendimento obj) throws DAOException, SQLException {
-        PreparedStatement stmt = conn.prepareStatement(QUERY_DELETE);
-        stmt.setInt(1, obj.getAtendimento_id());
-        stmt.executeUpdate();
+    public void remove(int id) throws SQLException {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_DELETE);
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw ex;
+        }
     }
 
 }

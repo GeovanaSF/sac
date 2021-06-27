@@ -4,18 +4,99 @@
     Author     : geova
 --%>
 
+<%@page import="sac.util.Erro"%>
+<%@page import="java.util.List"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>        
         <jsp:include page="header.jsp" />
-        <title>SAC - Dashboard</title>
+        <title>SAC - Atendimento</title>
     </head>
     <body class="hold-transition layout-top-nav">
 
         <div class="wrapper">
             <!-- Navbar -->
-            <jsp:include page="navbar.jsp" />
+            <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+                <div class="container">
+                    <a href="" class="navbar-brand">
+                        <span class="brand-text font-weight-light">SAC</span>
+                    </a>
+
+                    <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+                        <!-- Left navbar links -->
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a href="Dashboard" class="nav-link">Home</a>
+                            </li>
+                            <jsp:useBean id="usuarioLogado" class="sac.domain.Usuario" scope="session"/>
+                            <c:if test="${usuarioLogado.perfil_Id == 1}"> 
+                                <li class="nav-item">
+                                    <a href="AlterarDados" class="nav-link">Alteração de dados</a>
+                                </li> 
+                            </c:if>
+                            <c:if test="${usuarioLogado.perfil_Id == 1}"> 
+                                <li class="nav-item">
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${usuarioLogado.perfil_Id != 1}"> 
+                                <li class="nav-item dropdown">
+                                    <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>
+                                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                        <c:if test="${usuarioLogado.perfil_Id == 2}"> 
+                                            <li><a href="Categoria" class="dropdown-item">Categorias</a></li>
+                                            <li><a href="Produto" class="dropdown-item">Produtos</a></li>
+                                            </c:if>
+                                            <c:if test="${usuarioLogado.perfil_Id == 3}"> 
+                                            <li><a href="Funcionario" class="dropdown-item">Funcionários/Gerentes</a></li>
+                                            </c:if>
+                                    </ul>
+                                </li>
+                            </c:if>
+                            <c:if test="${usuarioLogado.perfil_Id == 3}"> 
+                                <li class="nav-item dropdown">
+                                    <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Relatórios</a>
+                                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                        <li><a href="#" class="dropdown-item">Funcionários</a></li>
+                                        <li><a href="#" class="dropdown-item">Produtos mais reclamados</a></li>
+                                        <li><a href="#" class="dropdown-item">Atendimentos abertos</a></li>
+                                        <li><a href="#" class="dropdown-item">Reclamações</a></li>
+                                    </ul>
+                                </li>
+                            </c:if>
+                        </ul>
+
+                    </div>
+
+                    <!-- Right navbar links -->
+                    <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                        <!-- Messages Dropdown Menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link ignore-click" data-toggle="dropdown" href="">
+                                <i class="fas fa-user"></i>
+                                <span class="badge badge-danger navbar-badge"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">                   
+                                <div class="dropdown-divider"></div>
+                                <a href="Logout" class="dropdown-item dropdown-footer">Logout</a>
+                            </div>
+                        </li>                
+                    </ul>
+                </div>
+            </nav>
             <!-- /.navbar -->
+
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
@@ -23,16 +104,12 @@
                 <div class="content-header">
                     <div class="container">
                         <div class="row mb-2">
-                            <div class="col-sm-6">
-                                <h1 class="m-0"> Top Navigation <small>Example 3.0</small></h1>
-                            </div><!-- /.col -->
-                            <div class="col-sm-6">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="#">Layout</a></li>
-                                    <li class="breadcrumb-item active">Top Navigation</li>
-                                </ol>
-                            </div><!-- /.col -->
+                            <div class="col-sm-10">
+                                <h3 class="m-0"> Atendimento</h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a href="MeusAtendimentos" class="nav-link btn btn-default">Voltar</a>
+                            </div>
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
                 </div>
@@ -41,63 +118,65 @@
                 <!-- Main content -->
                 <div class="content">
                     <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
+                        <form class="row" action="Novo_Atendimento" method="post">
 
-                                        <p class="card-text">
-                                            Some quick example text to build on the card title and make up the bulk of the card's
-                                            content.
-                                        </p>
+                            <jsp:useBean id="atendimento" class="sac.domain.Atendimento" scope="request">
+                                <jsp:setProperty name="atendimento" property="*" />
+                            </jsp:useBean>
 
-                                        <a href="#" class="card-link">Card link</a>
-                                        <a href="#" class="card-link">Another link</a>
-                                    </div>
-                                </div>
+                            <div class="input-group mb-1 col-6">
 
-                                <div class="card card-primary card-outline">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
+                                <jsp:useBean id="produtos" class="sac.model.Produtos" scope="request"/>
 
-                                        <p class="card-text">
-                                            Some quick example text to build on the card title and make up the bulk of the card's
-                                            content.
-                                        </p>
-                                        <a href="#" class="card-link">Card link</a>
-                                        <a href="#" class="card-link">Another link</a>
-                                    </div>
-                                </div><!-- /.card -->
+                                <select class="custom-select form-control-border" id="produto_id" name="produto_id" value="${atendimento.produto_id}" placeholder="Selecione o produto">
+                                    <c:if test="${atendimento.produto_id == 0}">
+                                        <option selected="selected">Selecione o produto</option>    
+                                    </c:if>
+                                    <c:if test="${atendimento.produto_id != 0}">
+                                        <option>Selecione o produto</option>    
+                                    </c:if>
+                                    <c:forEach var="produto" items="${produtos.getProdutos()}">
+                                        <c:if test="${atendimento.produto_id == produto.produto_id}">
+                                            <option selected="selected" value="${produto.produto_id}">${produto.nome}}</option>    
+                                        </c:if>
+
+                                        <c:if test="${atendimento.produto_id != produto.produto_id}">
+                                            <option value="${produto.produto_id}">${produto.nome}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                </select>
+
                             </div>
-                            <!-- /.col-md-6 -->
-                            <div class="col-lg-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title m-0">Featured</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title">Special title treatment</h6>
+                            <div class="input-group mb-1 col-6">
+                                <jsp:useBean id="tipoatendimentos" class="sac.model.TipoAtendimentos" scope="request"/>
 
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                                    </div>
-                                </div>
+                                <select class="custom-select form-control-border" id="tipoatendimento_id" name="tipoatendimento_id" value="${atendimento.tipoatendimento_id}" placeholder="Estado">
+                                    <c:if test="${atendimento.tipoatendimento_id == 0}">
+                                        <option selected="selected">Selecione o tipo de atendimento</option>    
+                                    </c:if>
+                                    <c:if test="${atendimento.tipoatendimento_id != 0}">
+                                        <option>Selecione o produto</option>    
+                                    </c:if>
+                                    <c:forEach var="tipo" items="${tipoatendimentos.getTipoAtendimentos()}">
+                                        <c:if test="${atendimento.tipoatendimento_id == tipo.tipoAtendimento_id}">
+                                            <option selected="selected" value="${tipo.tipoAtendimento_id}">${tipo.nome}}</option>    
+                                        </c:if>
 
-                                <div class="card card-primary card-outline">
-                                    <div class="card-header">
-                                        <h5 class="card-title m-0">Featured</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title">Special title treatment</h6>
-
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                                    </div>
-                                </div>
+                                        <c:if test="${atendimento.tipoatendimento_id != tipo.tipoAtendimento_id}">
+                                            <option value="${tipo.tipoAtendimento_id}">${tipo.nome}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                </select>
                             </div>
-                            <!-- /.col-md-6 -->
-                        </div>
+
+                            <div class="input-group mb-1 col-12">
+                                <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" value="${atendimento.descricao}"></textarea>
+                            </div>
+                            <div class="col-10"></div>
+                            <div class="col-2">
+                                <button type="submit" name="bSalvar" value="salvar" class="btn btn-primary btn-block">Solicitar</button>
+                            </div>
+                        </form>
                         <!-- /.row -->
                     </div><!-- /.container-fluid -->
                 </div>
@@ -110,5 +189,22 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        <script type="text/javascript">
+            $(function () {
+                $('[data-mask]').inputmask();
+
+            <%
+                Erro mensagens = (Erro) request.getAttribute("mensagens");
+            %>
+                var existe = ${mensagens.isExisteErros()};
+                var mensagens = ${mensagens.getErros()};
+                if (existe && mensagens.length > 0)
+                {
+                    $.each(mensagens, function (i, el) {
+                        toastr.error(el)
+                    })
+                }
+            });
+        </script>
     </body>
 </html>

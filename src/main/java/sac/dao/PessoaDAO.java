@@ -133,9 +133,9 @@ public class PessoaDAO implements DAO<Pessoa> {
     }
 
     @Override
-    public void remove(Pessoa obj) throws DAOException, SQLException {
+    public void remove(int id) throws DAOException, SQLException {
         PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
-        stmt.setInt(1, obj.getPessoa_Id());
+        stmt.setInt(1, id);
         stmt.executeUpdate();
     }
 

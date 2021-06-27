@@ -4,6 +4,7 @@
     Author     : geova
 --%>
 
+<%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -37,17 +38,17 @@
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <li class="nav-item">
-                                    <a href="Novo_Atendimento" class="nav-link">Novo atendimento</a>
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
                                 </li>
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
                                 <li class="nav-item">
-                                    <a href="Atendimentos/EmAberto" class="nav-link">Atendimentos em aberto</a>
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
                                 </li>
                             </c:if>
-                            <li class="nav-item">
-                                <a href="Atendimentos" class="nav-link">Todos Atendimentos</a>
-                            </li>
                             <c:if test="${usuarioLogado.perfil_Id != 1}"> 
                                 <li class="nav-item dropdown">
                                     <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>
@@ -121,7 +122,7 @@
                             <!--CLIENTE: LISTA TODOS OS ATENDIMENTOS-->
 
                             <sql:query dataSource="${conexao}" var="consulta">
-                                select categoria_id, nome from categoria order by nome
+                                select categoria_id, nome from categoria order by categoria_id
                             </sql:query>
 
                             <table class="table table-striped col-12">
@@ -137,7 +138,13 @@
                                         <tr>
                                             <td>${item.categoria_id}</td>
                                             <td>${item.nome}</td>
-                                            <td></td>       
+                                            <td>
+                                                <a  href="Categoria?id=${item.categoria_id}">
+                                                    <i style="margin:5%;" class="fas fa-edit" alt="Editar"></i>
+                                                </a> 
+
+                                                <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.categoria_id})"></i>
+                                            </td>       
                                         </tr>
                                     </c:forEach>
                                     <c:if test="${fn: length(consulta.rows)==0}">
@@ -161,6 +168,56 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        <script type="text/javascript">
+            $(function () {
+                $('[data-mask]').inputmask();
 
+            <%
+                Erro mensagens = (Erro) request.getAttribute("mensagens");
+            %>
+                var existe = ${mensagens.isExisteErros()};
+                var mensagens = ${mensagens.getErros()};
+                if (existe && mensagens.length > 0)
+                {
+                    $.each(mensagens, function (i, el) {
+                        toastr.error(el)
+                    })
+                }
+
+            });
+
+            function excluir(id) {
+                Swal.fire({
+                    title: 'Deseja excluir?',
+                    text: "Não será possível reverter a ação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim!',
+                    cancelButtonText: 'Não!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.get("Excluir?tipo=categoria&id=" + id, function (responseJson) {
+                            if (responseJson.sucesso) {
+                                Swal.fire(
+                                        'Excluído!',
+                                        'Registro excluído com sucesso.',
+                                        'success'
+                                        ).then(function () {
+                                    location.href = "/SAC_V1/Categoria";
+                                })
+                            } else {
+                                Swal.fire(
+                                        'Falha!',
+                                        'Erro ao excluir registro, tente mais tarde.',
+                                        'error'
+                                        )
+                            }
+                        });
+                    }
+                })
+            }
+        </script>
     </body>
 </html>

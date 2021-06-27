@@ -36,17 +36,17 @@
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <li class="nav-item">
-                                    <a href="Novo_Atendimento" class="nav-link">Novo atendimento</a>
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
                                 </li>
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
                                 <li class="nav-item">
-                                    <a href="Atendimentos/EmAberto" class="nav-link">Atendimentos em aberto</a>
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
                                 </li>
                             </c:if>
-                            <li class="nav-item">
-                                <a href="Atendimentos" class="nav-link">Todos Atendimentos</a>
-                            </li>
                             <c:if test="${usuarioLogado.perfil_Id != 1}"> 
                                 <li class="nav-item dropdown">
                                     <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>
@@ -118,17 +118,18 @@
                             <!--CLIENTE: LISTA TODOS OS ATENDIMENTOS-->
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <sql:query dataSource="${conexao}" var="consulta">
-                                    select atendimento_id,datacriacao,datafinalizacao,produto_id,descricao from atendimento where cliente_id=${usuarioLogado.usuario_Id} order by dataCriacao
+                                    select atendimento_id,to_char(datacriacao, 'DD-MM-YYYY HH:mm:ss') as datacriacao,to_char(datafinalizacao, 'DD-MM-YYYY HH:mm:ss') as datafinalizacao,produto_id,descricao from atendimento where cliente_id=${usuarioLogado.usuario_Id} order by dataCriacao
                                 </sql:query>
 
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="width: 10px">#</th>
-                                            <th>Data Criação</th>
-                                            <th>Data Resolução</th>
-                                            <th>Produto</th>
-                                            <th>Descrição</th>
+                                            <th class="col-1">#</th>
+                                            <th class="col-2">Data Criação</th>
+                                            <th class="col-2">Data Resolução</th>
+                                            <th class="col-2">Produto</th>
+                                            <th class="col-2">Descrição</th>
+                                            <th class="col-2">Ação</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -138,12 +139,13 @@
                                                 <td>${item.datacriacao}</td>
                                                 <td>${item.datafinalizacao}</td>
                                                 <td>${item.produto_id}</td>
-                                                <td>${item.descricao}</td>       
+                                                <td>${item.descricao}</td>     
+                                                <td></td>
                                             </tr>
                                         </c:forEach>
                                         <c:if test="${fn: length(consulta.rows)==0}">
                                             <tr>
-                                                <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
+                                                <td colspan="6" style="text-align: center;">Nenhum item encontrado</td>
                                             </tr>
                                         </c:if>
                                     </tbody>
@@ -153,17 +155,18 @@
                             <!--FUNCIONARIO: LISTA TODOS OS ATENDIMENTOS NÃO RESOLVIDOS-->
                             <c:if test="${usuarioLogado.perfil_Id == 2}"> 
                                 <sql:query dataSource="${conexao}" var="consulta">
-                                    select atendimento_id,datacriacao,datafinalizacao,produto_id,descricao from atendimento where datafinalizacao is null order by dataCriacao
+                                    select atendimento_id,to_char(datacriacao, 'DD-MM-YYYY HH:mm:ss') as datacriacao,to_char(datafinalizacao, 'DD-MM-YYYY HH:mm:ss') as datafinalizacao,produto_id,descricao from atendimento where datafinalizacao is null order by dataCriacao
                                 </sql:query>
 
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="width: 10px">#</th>
-                                            <th>Data Criação</th>
-                                            <th>Data Resolução</th>
-                                            <th>Produto</th>
-                                            <th>Descrição</th>
+                                            <th class="col-1">#</th>
+                                            <th class="col-2">Data Criação</th>
+                                            <th class="col-2">Data Resolução</th>
+                                            <th class="col-2">Produto</th>
+                                            <th class="col-2">Descrição</th>
+                                            <th class="col-2"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -173,12 +176,13 @@
                                                 <td>${item.datacriacao}</td>
                                                 <td>${item.datafinalizacao}</td>
                                                 <td>${item.produto_id}</td>
-                                                <td>${item.descricao}</td>       
+                                                <td>${item.descricao}</td>   
+                                                <td></td>
                                             </tr>
                                         </c:forEach>
                                         <c:if test="${fn: length(consulta.rows)==0}">
                                             <tr>
-                                                <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
+                                                <td colspan="6" style="text-align: center;">Nenhum item encontrado</td>
                                             </tr>
                                         </c:if>
                                     </tbody>

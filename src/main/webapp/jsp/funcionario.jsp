@@ -38,17 +38,17 @@
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <li class="nav-item">
-                                    <a href="Novo_Atendimento" class="nav-link">Novo atendimento</a>
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
                                 </li>
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
                                 <li class="nav-item">
-                                    <a href="Atendimentos/EmAberto" class="nav-link">Atendimentos em aberto</a>
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
                                 </li>
                             </c:if>
-                            <li class="nav-item">
-                                <a href="Atendimentos" class="nav-link">Todos Atendimentos</a>
-                            </li>
                             <c:if test="${usuarioLogado.perfil_Id != 1}"> 
                                 <li class="nav-item dropdown">
                                     <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>

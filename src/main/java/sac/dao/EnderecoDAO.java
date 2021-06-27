@@ -120,9 +120,9 @@ public class EnderecoDAO implements DAO<Endereco> {
     }
 
     @Override
-    public void remove(Endereco obj) throws DAOException, SQLException {
+    public void remove(int id) throws DAOException, SQLException {
         PreparedStatement stmt = conn.prepareStatement(QUERY_REMOVE);
-        stmt.setInt(1, obj.getEndereco_id());
+        stmt.setInt(1, id);
         stmt.executeUpdate();
     }
 

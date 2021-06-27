@@ -4,6 +4,7 @@
     Author     : geova
 --%>
 
+<%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -37,17 +38,17 @@
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <li class="nav-item">
-                                    <a href="Novo_Atendimento" class="nav-link">Novo atendimento</a>
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
                                 </li>
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
                                 <li class="nav-item">
-                                    <a href="Atendimentos/EmAberto" class="nav-link">Atendimentos em aberto</a>
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
                                 </li>
                             </c:if>
-                            <li class="nav-item">
-                                <a href="Atendimentos" class="nav-link">Todos Atendimentos</a>
-                            </li>
                             <c:if test="${usuarioLogado.perfil_Id != 1}"> 
                                 <li class="nav-item dropdown">
                                     <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>
@@ -122,9 +123,9 @@
 
                             <sql:query dataSource="${conexao}" var="consulta">
                                 select p.produto_id as produto_id, p.nome as produto, p.descricao as descricao, c.nome as categoria 
-                                        from produto p 
-                                        join categoria c on p.categoria_id = c.categoria_id 
-                                        order by p.nome
+                                from produto p 
+                                join categoria c on p.categoria_id = c.categoria_id 
+                                order by p.nome
                             </sql:query>
 
                             <table class="table table-striped col-12">
@@ -144,7 +145,11 @@
                                             <td>${item.produto}</td>
                                             <td>${item.descricao}</td>
                                             <td>${item.categoria}</td>
-                                            <td></td>       
+                                            <td>
+                                                <a  href="Produto?id=${item.produto_id}"><i style="margin:5%;" class="fas fa-edit" alt="Visualizar"></i></a> 
+
+                                                <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.produto_id})"></i>
+                                            </td>       
                                         </tr>
                                     </c:forEach>
                                     <c:if test="${fn: length(consulta.rows)==0}">
@@ -168,6 +173,55 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        <script type="text/javascript">
+            $(function () {
+                $('[data-mask]').inputmask();
 
+            <%
+                Erro mensagens = (Erro) request.getAttribute("mensagens");
+            %>
+                var existe = ${mensagens.isExisteErros()};
+                var mensagens = ${mensagens.getErros()};
+                if (existe && mensagens.length > 0)
+                {
+                    $.each(mensagens, function (i, el) {
+                        toastr.error(el)
+                    })
+                }
+            });
+
+            function excluir(id) {
+                Swal.fire({
+                    title: 'Deseja excluir?',
+                    text: "Não será possível reverter a ação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim!',
+                    cancelButtonText: 'Não!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.get("Excluir?tipo=produto&id=" + id, function (responseJson) {
+                            if (responseJson.sucesso) {
+                                Swal.fire(
+                                        'Excluído!',
+                                        'Registro excluído com sucesso.',
+                                        'success'
+                                        ).then(function () {
+                                    location.href = "/SAC_V1/Produto";
+                                })
+                            } else {
+                                Swal.fire(
+                                        'Falha!',
+                                        'Erro ao excluir registro, tente mais tarde.',
+                                        'error'
+                                        )
+                            }
+                        });
+                    }
+                })
+            }
+        </script>
     </body>
 </html>

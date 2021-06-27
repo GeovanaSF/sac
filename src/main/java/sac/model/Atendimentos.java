@@ -5,22 +5,24 @@
  */
 package sac.model;
 
-import java.sql.Date;
+import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  *
  * @author geova
  */
 public class Atendimentos {
-    private int atendimento_id;
-    private String cliente;
-    private String funcionario;
-    private Date dataCriacao;
-    private Date dataResolucao;
-    private String produto;
-    private int situacaoAtendimento;
+    public int atendimento_id;
+    public String cliente;
+    public String funcionario;
+    public String dataCriacao;
+    public String dataResolucao;
+    public String produto;
+    public String situacaoAtendimento;
+    public int situacao;
 
-    public Atendimentos(int atendimento_id, String cliente, String funcionario, Date dataCriacao, Date dataResolucao, String produto, int situacaoAtendimento) {
+    public Atendimentos(int atendimento_id, String cliente, String funcionario, String dataCriacao, String dataResolucao, String produto, String situacaoAtendimento, int situacao) {
         this.atendimento_id = atendimento_id;
         this.cliente = cliente;
         this.funcionario = funcionario;
@@ -28,14 +30,7 @@ public class Atendimentos {
         this.dataResolucao = dataResolucao;
         this.produto = produto;
         this.situacaoAtendimento = situacaoAtendimento;
-    }
-
-    public int getSituacaoAtendimento() {
-        return situacaoAtendimento;
-    }
-
-    public void setSituacaoAtendimento(int situacaoAtendimento) {
-        this.situacaoAtendimento = situacaoAtendimento;
+        this.situacao = situacao;
     }
 
     public int getAtendimento_id() {
@@ -62,19 +57,19 @@ public class Atendimentos {
         this.funcionario = funcionario;
     }
 
-    public Date getDataCriacao() {
+    public String getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public Date getDataResolucao() {
+    public String getDataResolucao() {
         return dataResolucao;
     }
 
-    public void setDataResolucao(Date dataResolucao) {
+    public void setDataResolucao(String dataResolucao) {
         this.dataResolucao = dataResolucao;
     }
 
@@ -86,6 +81,13 @@ public class Atendimentos {
         this.produto = produto;
     }
 
+    public String getSituacaoAtendimento() {
+        return situacaoAtendimento;
+    }
+
+    public void setSituacaoAtendimento(String situacaoAtendimento) {
+        this.situacaoAtendimento = situacaoAtendimento;
+    }
 
     
 }

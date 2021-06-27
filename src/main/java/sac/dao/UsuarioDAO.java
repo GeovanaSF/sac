@@ -130,10 +130,10 @@ public class UsuarioDAO implements DAO<Usuario> {
     }
 
     @Override
-    public void remove(Usuario obj) throws DAOException, SQLException {
+    public void remove(int id) throws DAOException, SQLException {
         try {
             PreparedStatement stmt = conn.prepareStatement(QUERY_DELETE);
-            stmt.setInt(1, obj.getUsuario_Id());
+            stmt.setInt(1, id);
             stmt.executeUpdate();
 
         } catch (SQLException sQLException) {

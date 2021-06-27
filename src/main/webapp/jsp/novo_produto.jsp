@@ -4,6 +4,7 @@
     Author     : geova
 --%>
 
+<%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -37,17 +38,17 @@
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <li class="nav-item">
-                                    <a href="Novo_Atendimento" class="nav-link">Novo atendimento</a>
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
                                 </li>
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
                                 <li class="nav-item">
-                                    <a href="Atendimentos/EmAberto" class="nav-link">Atendimentos em aberto</a>
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
                                 </li>
                             </c:if>
-                            <li class="nav-item">
-                                <a href="Atendimentos" class="nav-link">Todos Atendimentos</a>
-                            </li>
                             <c:if test="${usuarioLogado.perfil_Id != 1}"> 
                                 <li class="nav-item dropdown">
                                     <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>
@@ -133,7 +134,7 @@
                                     </div>
                                 </div>
                                 <div class="input-group mb-1 col-5">
-                                    <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" value="${cadastro.descricao}"></textarea>
+                                    <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" value="${cadastro.descricao}">${cadastro.descricao}</textarea>
                                 </div>
 
                                 <div class="input-group mb-1 col-5">
@@ -141,16 +142,12 @@
 
                                     <select class="custom-select" id="categoria_id" name="categoria_id" value="${cadastro.categoria_id}" placeholder="Categoria" style="margin: auto 2%;">
                                         <c:if test="${cadastro.categoria_id == 0}">
-                                            <option selected="selected">Selecione categoria</option>    
+                                            <option >Selecione categoria</option>    
                                         </c:if>
                                         <c:if test="${cadastro.categoria_id != 0}">
-                                            <option>Selecione</option>    
+                                            <option value="">Selecione categoria</option>    
                                         </c:if>
                                         <c:forEach var="categoria" items="${categorias.getCategorias()}">
-
-                                            <c:if test="${cadastro.categoria_id == categoria.categoria_id}">
-                                                <option selected="selected">Selecione</option>    
-                                            </c:if>
                                             <option value="${categoria.categoria_id}">${categoria.nome}</option>
                                         </c:forEach>
                                     </select>
@@ -174,6 +171,23 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        <script type="text/javascript">
+            $(function () {
+                $('[data-mask]').inputmask();
 
+            <%
+                        Erro mensagens = (Erro) request.getAttribute("mensagens");
+            %>
+        var existe = ${mensagens.isExisteErros()};
+        var mensagens = ${mensagens.getErros()};
+                if (existe && mensagens.length > 0)
+                {
+                    $.each(mensagens, function (i, el) {
+                        toastr.error(el)
+                    })
+                }
+            });
+
+        </script>
     </body>
 </html>

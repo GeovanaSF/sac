@@ -4,6 +4,7 @@
     Author     : geova
 --%>
 
+<%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -37,17 +38,17 @@
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
                                 <li class="nav-item">
-                                    <a href="Novo_Atendimento" class="nav-link">Novo atendimento</a>
+                                    <a href="MeusAtendimentos" class="nav-link">Meus atendimentos</a>
                                 </li>
                             </c:if>
                             <c:if test="${usuarioLogado.perfil_Id != 1}" var="teste"> 
                                 <li class="nav-item">
-                                    <a href="Atendimentos/EmAberto" class="nav-link">Atendimentos em aberto</a>
+                                    <a href="TodosAtendimentosAberto" class="nav-link">Atendimentos em aberto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="TodosAtendimentos" class="nav-link">Todos Atendimentos</a>
                                 </li>
                             </c:if>
-                            <li class="nav-item">
-                                <a href="Atendimentos" class="nav-link">Todos Atendimentos</a>
-                            </li>
                             <c:if test="${usuarioLogado.perfil_Id != 1}"> 
                                 <li class="nav-item dropdown">
                                     <a id="dropdownSubMenu1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle ignore-click">Cadastros</a>
@@ -118,17 +119,15 @@
                     <div class="container">
                         <form class="" action="Novo_Categoria" method="post">
                             <div class="row">
-                                <jsp:useBean id="cadastro" class="sac.model.Cadastro" scope="request">
-                                    <jsp:setProperty name="cadastro" property="*" />
-                                </jsp:useBean>
+                                <jsp:useBean id="cadastro" class="sac.model.Cadastro" scope="request"/>
                                 <div class="input-group mb-1 col-10">
                                     <input type="hidden" id="categoria_id" name="categoria_id" value="${cadastro.categoria_id}">
                                     <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome categoria" value="${cadastro.nome}">
-<!--                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fas fa-user"></span>
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="input-group-append">
+                                                                            <div class="input-group-text">
+                                                                                <span class="fas fa-user"></span>
+                                                                            </div>
+                                                                        </div>-->
                                 </div>
 
                                 <div class="col-2">
@@ -148,6 +147,23 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        <script type="text/javascript">
+            $(function () {
+                $('[data-mask]').inputmask();
 
+            <%
+                Erro mensagens = (Erro) request.getAttribute("mensagens");
+            %>
+                var existe = ${mensagens.isExisteErros()};
+                var mensagens = ${mensagens.getErros()};
+                if (existe && mensagens.length > 0)
+                {
+                    $.each(mensagens, function (i, el) {
+                        toastr.error(el)
+                    })
+                }
+            });
+
+        </script>
     </body>
 </html>

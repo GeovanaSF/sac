@@ -142,7 +142,7 @@ public class Novo extends HttpServlet {
                 String estado = request.getParameter("estado_id");
                 String cidade_id = request.getParameter("cidade_id");
                 String perfil = request.getParameter("perfil_id");
-                
+
                 Integer cidade = 0;
                 if (!cidade_id.isEmpty()) {
                     cidade = Integer.parseInt(cidade_id);
@@ -227,11 +227,64 @@ public class Novo extends HttpServlet {
 
         if (url.isEmpty()) {
             if (action.equals("/Categoria")) {
-                url = "/jsp/categoria.jsp";
+                String _id = request.getParameter("id");
+                if (_id == null || _id.isEmpty()) {
+                    url = "/jsp/categoria.jsp";
+                } else {
+                    int id = Integer.parseInt(_id);
+                    if (id > 0) {
+
+                        try {
+                            CategoriaDAO catDAO = new CategoriaDAO(connection);
+                            Categoria categoria = catDAO.getById(id);
+                            if (categoria != null) {
+                                cadastro.setCategoria_id(categoria.getCategoria_id());
+                                cadastro.setNome(categoria.getNome());
+
+                                url = "/jsp/novo_categoria.jsp";
+                            } else {
+                                url = "/jsp/categoria.jsp";
+                            }
+                        } catch (SQLException ex) {
+                            url = "/jsp/categoria.jsp";
+                        }
+                    }
+                }
             } else if (action.equals("/Novo_Categoria")) {
                 url = "/jsp/novo_categoria.jsp";
             } else if (action.equals("/Produto")) {
-                url = "/jsp/produto.jsp";
+                String _id = request.getParameter("id");
+                if (_id == null || _id.isEmpty()) {
+                    url = "/jsp/produto.jsp";
+                } else {
+                    int id = Integer.parseInt(_id);
+                    if (id > 0) {
+
+                        try {
+                            ProdutoDAO prodDAO = new ProdutoDAO(connection);
+                            Produto produto = prodDAO.getById(id);
+                            if (produto != null) {
+                                cadastro.setCategoria_id(produto.getCategoria_id());
+                                cadastro.setNome(produto.getNome());
+                                cadastro.setPeso(produto.getPeso());
+                                cadastro.setDescricao(produto.getDescricao());
+                                cadastro.setProduto_id(produto.getProduto_id());
+
+                                url = "/jsp/novo_produto.jsp";
+
+                                CategoriaDAO catDAO = new CategoriaDAO(connection);
+                                List<Categoria> categorias;
+                                categorias = catDAO.getList();
+                                Categorias c = new Categorias(categorias);
+                                request.setAttribute("categorias", c);
+                            } else {
+                                url = "/jsp/produto.jsp";
+                            }
+                        } catch (SQLException ex) {
+                            url = "/jsp/produto.jsp";
+                        }
+                    }
+                }
             } else if (action.equals("/Novo_Produto")) {
 
                 try {
@@ -264,7 +317,7 @@ public class Novo extends HttpServlet {
         }
 
         request.setAttribute("mensagens", erros);
-        request.setAttribute("cadatro", cadastro);
+        request.setAttribute("cadastro", cadastro);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);
