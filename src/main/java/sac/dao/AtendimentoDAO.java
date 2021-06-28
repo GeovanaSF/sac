@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sac.domain.Atendimento;
-import sac.domain.Estado;
 import sac.model.Atendimentos;
-import sac.model.SituacaoAtendimento;
 
 /**
  *
@@ -47,6 +45,8 @@ public class AtendimentoDAO implements DAO<Atendimento> {
     private static final String QUERY_GET = "select atendimento_id, cliente_id, funcionario_id, produto_id, tipoatendimento_id, datacriacao, datafinalizacao, situacao, descricao, solucao from atendimento";
     private static final String QUERY_INSERT = "INSERT INTO Atendimento (cliente_id, funcionario_id, produto_id, tipoatendimento_id, datacriacao, datafinalizacao, situacao, descricao, solucao) VALUES (?,?,?,?,?,?,?,?,?)";
     private static final String QUERY_UPDATE = "UPDATE Atendimento SET cliente_id=?, funcionario_id=?, produto_id=?, tipoatendimento_id=?, datacriacao=?, datafinalizacao=?, situacao=?, descricao=?, solucao=? where atendimento_id=?";
+    private static final String QUERY_UPDATECLIENTE = "UPDATE Atendimento SET produto_id=?, tipoatendimento_id=?, descricao=? where atendimento_id=?";
+    private static final String QUERY_UPDATEATEND = "UPDATE Atendimento SET funcionario_id=?, datafinalizacao=?, situacao=?, solucao=? where atendimento_id=?";
     private static final String QUERY_DELETE = "DELETE FROM Atendimento WHERE atendimento_id = ?";
     private final Connection conn;
 
@@ -59,13 +59,13 @@ public class AtendimentoDAO implements DAO<Atendimento> {
         try {
             PreparedStatement ps = null;
             ResultSet rs = null;
-            ps = conn.prepareStatement(QUERY_GET + "WHERE usuario_id = ?");
+            ps = conn.prepareStatement(QUERY_GET + " WHERE atendimento_id = ?");
             ps.setInt(1, id);
 
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new Atendimento(rs.getInt("atendimento_id"), rs.getInt("cliente_id"), rs.getInt("funcionario_id"),
+                return new Atendimento(rs.getInt("atendimento_id"), rs.getInt("cliente_id"), rs.getObject("funcionario_id"),
                         rs.getInt("produto_id"), rs.getInt("tipoatendimento_id"), rs.getTimestamp("dataCriacao"),
                         rs.getTimestamp("dataFinalizacao"), rs.getInt("situacao"),
                         rs.getString("descricao"), rs.getString("solucao"));
@@ -219,6 +219,34 @@ public class AtendimentoDAO implements DAO<Atendimento> {
             Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void updateAtendimento(Atendimento obj) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATEATEND);
+            stmt.setObject(1, obj.getFuncionario_id());
+            stmt.setObject(2, obj.getDatafinalizacaoTime());
+            stmt.setInt(3, obj.getSituacao());
+            stmt.setString(4, obj.getSolucao());
+            stmt.setInt(5, obj.getAtendimento_id());
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateAtendimentoCliente(Atendimento obj) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATECLIENTE);
+            stmt.setInt(1, obj.getProduto_id());
+            stmt.setInt(2, obj.getTipoatendimento_id());
+            stmt.setString(3, obj.getDescricao());
+            stmt.setInt(4, obj.getAtendimento_id());
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 
     @Override
     public void remove(int id) throws SQLException {

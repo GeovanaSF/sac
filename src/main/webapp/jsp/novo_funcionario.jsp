@@ -124,14 +124,17 @@
                                 <jsp:setProperty name="pessoa" property="*" />
                             </jsp:useBean>
 
+                            <input type="hidden" id="pessoa_id" name="pessoa_id" value="${pessoa.pessoa_id}">
+                            <input type="hidden" id="endereco_id" name="endereco_id" value="${pessoa.endereco_id}">
+                            <input type="hidden" id="usuario_id" name="usuario_id" value="${pessoa.usuario_id}">
 
                             <div class="input-group mb-1 col-12">
                                 <div class="custom-control custom-radio col-2">
-                                    <input class="custom-control-input" type="radio" id="perfil_gerente" name="perfil_id" value="3">
+                                    <input class="custom-control-input" type="radio" id="perfil_gerente" name="perfil_id" value="3" ${pessoa.perfil_Id == 3 ? "checked" : ""}>
                                     <label for="perfil_gerente" class="custom-control-label">Gerente</label>
                                 </div>
                                 <div class="custom-control custom-radio col-2">
-                                    <input class="custom-control-input" type="radio" id="perfil_funcionario" name="perfil_id" value="2">
+                                    <input class="custom-control-input" type="radio" id="perfil_funcionario" name="perfil_id" value="2"${pessoa.perfil_Id == 2 ? "checked" : ""}>
                                     <label for="perfil_funcionario" class="custom-control-label">Funcionário</label>
                                 </div>
                             </div>
@@ -211,28 +214,26 @@
                                         <option selected="selected">Selecione o estado</option>    
                                     </c:if>
                                     <c:if test="${pessoa.estado_id != 0}">
-                                        <option>Selecione</option>    
+                                        <option>Selecione o estado</option>    
                                     </c:if>
                                     <c:forEach var="estado" items="${estados.getEstados()}">
-
-                                        <c:if test="${pessoa.estado_id == estado.estado_id}">
-                                            <option selected="selected">Selecione o estado</option>    
-                                        </c:if>
-                                        <option value="${estado.estado_id}">${estado.nome}</option>
+                                        <option ${pessoa.estado_id == estado.estado_id ? "selected" : ""} value="${estado.estado_id}">${estado.nome}</option>
                                     </c:forEach>
                                 </select>
 
                             </div>
                             <div class="input-group mb-1 col-6">
                                 <select class="custom-select form-control-border" id="cidade_id" name="cidade_id" value="${pessoa.cidade_id}" placeholder="Cidade">
-                                    <option selected="selected">Selecione a cidade</option>
+                                    <c:if test="${estados.getCidades().size() == 0}">
+                                        <option selected="selected">Selecione a cidade</option>    
+                                    </c:if>
+                                    <c:if test="${pessoa.cidade_id != 0}">
+                                        <option>Selecione a cidade</option>    
+                                    </c:if>
+                                    <c:forEach var="cidade" items="${estados.getCidades()}">
+                                        <option ${pessoa.cidade_id == cidade.cidade_id ? "selected" : ""} value="${cidade.cidade_id}">${cidade.nome}</option>
+                                    </c:forEach>
                                 </select>
-<!--                                <input class="form-control" type="text" id="cidade" name="cidade" placeholder="Cidade">
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="far fa-address-book"></span>
-                                    </div>
-                                </div>-->
                             </div>
 
                             <div class="input-group mb-1 col-12">
@@ -244,7 +245,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-6">
-                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha">
+                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" value="${pessoa.senha}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-lock"></span>
@@ -252,7 +253,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-6">
-                                <input type="password" class="form-control" id="conf_senha" name="conf_senha" placeholder="Confirmação senha">
+                                <input type="password" class="form-control" id="conf_senha" name="conf_senha" placeholder="Confirmação senha" value="${pessoa.senha}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-lock"></span>
@@ -291,15 +292,15 @@
                         toastr.error(el)
                     })
                 }
-                
+
                 $("#estado_id").on("change", function () {
                     var id = $(this).find(":selected").val();
-                    
+
                     $.get("Cidade?estado_id=" + id, function (responseJson) {
                         var $select = $("#cidade_id");
                         $select.find("option").remove()
                         $("<option>").val("").text("Selecione a cidade").appendTo($select);
-                        
+
                         $.each(responseJson, function (index, el) {
                             $("<option>").val(el.cidade_id).text(el.nome).appendTo($select);
                         });

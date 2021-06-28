@@ -140,10 +140,10 @@
                                             <td>${item.nome}</td>
                                             <td>
                                                 <a  href="Categoria?id=${item.categoria_id}">
-                                                    <i style="margin:5%;" class="fas fa-edit" alt="Editar"></i>
+                                                    <i style="margin:5%;" class="fas fa-edit" alt="Editar" data-toggle="tooltip" data-placement="top" title="Editar categoria"></i>
                                                 </a> 
 
-                                                <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.categoria_id})"></i>
+                                                <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.categoria_id})" data-toggle="tooltip" data-placement="top" title="Excluir categoria"></i>
                                             </td>       
                                         </tr>
                                     </c:forEach>
@@ -171,6 +171,7 @@
         <script type="text/javascript">
             $(function () {
                 $('[data-mask]').inputmask();
+                $('[data-toggle="tooltip"]').tooltip();
 
             <%
                 Erro mensagens = (Erro) request.getAttribute("mensagens");

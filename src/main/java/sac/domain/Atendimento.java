@@ -28,14 +28,21 @@ public class Atendimento implements Serializable {
     private String descricao;
     private String solucao;
 
-    public Atendimento(int atendimento_id, int cliente_id, int funcionario_id, int produto_id, int tipoatendimento_id, Timestamp datacriacao, Timestamp datafinalizacao, int situacao, String descricao, String solucao) {
+    public Atendimento(int atendimento_id, int cliente_id, Object funcionario_id, int produto_id, int tipoatendimento_id, Timestamp datacriacao, Timestamp datafinalizacao, int situacao, String descricao, String solucao) {
         this.atendimento_id = atendimento_id;
         this.cliente_id = cliente_id;
-        this.funcionario_id = funcionario_id;
+        if (funcionario_id != null) {
+            this.funcionario_id = (Integer) funcionario_id;
+        }
+
         this.produto_id = produto_id;
         this.tipoatendimento_id = tipoatendimento_id;
-        this.datacriacao = new Date(datacriacao.getTime());
-        this.datafinalizacao = new Date(datafinalizacao.getTime());
+        if (datacriacao != null) {
+            this.datacriacao = new Date(datacriacao.getTime());
+        }
+        if (datafinalizacao != null) {
+            this.datafinalizacao = new Date(datafinalizacao.getTime());
+        }
         this.situacao = situacao;
         this.descricao = descricao;
         this.solucao = solucao;

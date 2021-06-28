@@ -6,6 +6,7 @@
 package sac.model;
 
 import java.util.List;
+import sac.domain.Cidade;
 import sac.domain.Estado;
 
 /**
@@ -14,6 +15,7 @@ import sac.domain.Estado;
  */
 public class Estados {
     public List<Estado> estados;
+    public List<Cidade> cidades;
 
     public Estados(List<Estado> estados) {
         this.estados = estados;
@@ -26,4 +28,13 @@ public class Estados {
     public void setEstados(List<Estado> estados) {
         this.estados = estados;
     }    
+
+    public List<Cidade> getCidades() {
+        return cidades;
+    }
+
+    public void setCidades(List<Cidade> cidades) {
+        this.cidades = cidades;
+    }
+    
 }

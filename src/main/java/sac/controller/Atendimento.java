@@ -58,11 +58,14 @@ public class Atendimento extends HttpServlet {
             Consultas consulta = new Consultas();
             sac.domain.Atendimento atend = new sac.domain.Atendimento();
             Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
-            String botao = request.getQueryString();
-            if (request.getParameter("bSalvar") != null && botao == null) {
+
+            String parametros = request.getQueryString();
+            if (request.getParameter("bSalvar") != null && parametros == null) {
                 String produto = request.getParameter("produto_id");
                 String tipoatendimento = request.getParameter("tipoatendimento_id");
                 String descricao = request.getParameter("descricao");
+                String id_atendimento = request.getParameter("atendimento_id");
+                String solucao = request.getParameter("solucao");
 
                 Integer produto_id = 0;
                 if (!produto.isEmpty()) {
@@ -71,6 +74,10 @@ public class Atendimento extends HttpServlet {
                 Integer tipoatendimento_id = 0;
                 if (!tipoatendimento.isEmpty()) {
                     tipoatendimento_id = Integer.parseInt(tipoatendimento);
+                }
+                Integer atendimento_id = 0;
+                if (!id_atendimento.isEmpty()) {
+                    atendimento_id = Integer.parseInt(id_atendimento);
                 }
 
                 if (descricao == null || descricao.isEmpty()) {
@@ -82,6 +89,9 @@ public class Atendimento extends HttpServlet {
                 if (tipoatendimento_id == 0) {
                     erros.add("'Selecione um tipo de atendimento!'");
                 }
+                if (user.getPerfil_Id() == 2 && (solucao == null || solucao.isEmpty())) {
+                    erros.add("'Preencha uma solução!'");
+                }
 
                 if (!erros.isExisteErros()) {
                     sac.domain.Atendimento atendimento = new sac.domain.Atendimento();
@@ -89,18 +99,42 @@ public class Atendimento extends HttpServlet {
                     atendimento.setProduto_id(produto_id);
                     atendimento.setDescricao(descricao);
                     atendimento.setTipoatendimento_id(tipoatendimento_id);
-                    atendimento.setFuncionario_id(null);
-                    atendimento.setSituacao(1);
-                    long millis = System.currentTimeMillis();
-                    java.sql.Date date = new java.sql.Date(millis);
-                    atendimento.setDatacriacao(date);
+                    atendimento.setAtendimento_id(atendimento_id);
+                    if (user.getPerfil_Id() == 2) {
+                        atendimento.setFuncionario_id(user.getUsuario_Id());
+                        atendimento.setSituacao(2);
+
+                        long millis = System.currentTimeMillis();
+                        java.sql.Date date = new java.sql.Date(millis);
+                        atendimento.setDatafinalizacao(date);
+                    } else {
+                        atendimento.setFuncionario_id(null);
+                        atendimento.setSituacao(1);
+                    }
+
+                    if (atendimento_id == 0) {
+                        long millis = System.currentTimeMillis();
+                        java.sql.Date date = new java.sql.Date(millis);
+                        atendimento.setDatacriacao(date);
+                    }
 
                     AtendimentoDAO atendDAO = new AtendimentoDAO(connection);
-                    int atend_id = atendDAO.insert(atendimento);
-                    request.setAttribute("bSalvar", "");
+                    if (atendimento_id == 0) {
+                        atendimento_id = atendDAO.insert(atendimento);
+                    } else if (user.getPerfil_Id() == 2) {
+                        atendDAO.updateAtendimento(atendimento);
+                    } else {
+                        atendDAO.updateAtendimentoCliente(atendimento);
+                    }
 
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("MeusAtendimentos?page=1");
-                    dispatcher.forward(request, response);
+                    request.setAttribute("bSalvar", "");
+                    if (user.getPerfil_Id() == 1) {
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("MeusAtendimentos?page=1");
+                        dispatcher.forward(request, response);
+                    } else {
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("TodosAtendimentos?page=1");
+                        dispatcher.forward(request, response);
+                    }
                 } else {
                     atend.setProduto_id(produto_id);
                     atend.setDescricao(descricao);
@@ -139,25 +173,59 @@ public class Atendimento extends HttpServlet {
 
                     } catch (SQLException ex) {
                         Logger.getLogger(Atendimento.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (DAOException ex) {
+                        Logger.getLogger(Atendimento.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                     url = "/jsp/novo_atendimento.jsp";
+                } else if (action.equals("/Atendimento")) {
+                    String _id = request.getParameter("id");
+                    if (_id == null || _id.isEmpty()) {
+                        url = "/jsp/atendimento.jsp";
+                    } else {
+                        int id = Integer.parseInt(_id);
+                        if (id > 0) {
+
+                            try {
+                                AtendimentoDAO atenDAO = new AtendimentoDAO(connection);
+                                atend = atenDAO.getById(id);
+                                if (atend != null) {
+                                    url = "/jsp/novo_atendimento.jsp";
+
+                                    ProdutoDAO produtoDAO = new ProdutoDAO(connection);
+                                    List<Produto> produtos;
+                                    produtos = produtoDAO.getList();
+                                    Produtos p = new Produtos(produtos);
+                                    request.setAttribute("produtos", p);
+
+                                    TipoAtendimentoDAO tipoAtendimentoDAO = new TipoAtendimentoDAO(connection);
+                                    List<TipoAtendimento> tipos = tipoAtendimentoDAO.getList();
+                                    TipoAtendimentos ta = new TipoAtendimentos(tipos);
+                                    request.setAttribute("tipoatendimentos", ta);
+                                } else {
+                                    url = "/jsp/atendimento.jsp";
+                                }
+                            } catch (SQLException ex) {
+                                url = "/jsp/atendimento.jsp";
+                            }
+                        }
+                    }
                 }
+
+                request.setAttribute("action", action);
+                request.setAttribute("mensagens", erros);
+                request.setAttribute("consulta", consulta);
+                request.setAttribute("atendimento", atend);
+
+                RequestDispatcher dispatcher = request.getRequestDispatcher(url);
+                dispatcher.forward(request, response);
             }
-
-            request.setAttribute("action", action);
-            request.setAttribute("mensagens", erros);
-            request.setAttribute("consulta", consulta);
-            request.setAttribute("atendimento", atend);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-            dispatcher.forward(request, response);
         } catch (DAOException ex) {
             Logger.getLogger(Atendimento.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

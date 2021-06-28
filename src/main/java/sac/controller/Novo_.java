@@ -17,17 +17,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sac.dao.CidadeDAO;
+import sac.dao.CategoriaDAO;
 import sac.dao.ConnectionFactory;
 import sac.dao.DAOException;
 import sac.dao.EnderecoDAO;
 import sac.dao.EstadoDAO;
 import sac.dao.PessoaDAO;
+import sac.dao.ProdutoDAO;
 import sac.dao.UsuarioDAO;
+import sac.domain.Categoria;
 import sac.domain.Endereco;
 import sac.domain.Estado;
 import sac.domain.Pessoa;
+import sac.domain.Produto;
 import sac.domain.Usuario;
+import sac.model.Categorias;
 import sac.model.Estados;
 import sac.util.Erro;
 
@@ -35,7 +39,7 @@ import sac.util.Erro;
  *
  * @author geova
  */
-public class AlterarDados extends HttpServlet {
+public class Novo_ extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,18 +52,83 @@ public class AlterarDados extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, DAOException {
-        Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
-        if (user == null) {
-            request.getSession().invalidate();
-            response.sendRedirect("/SAC_V1/Login");
-            return;
-        }
-        
+        String action = request.getServletPath();
         Erro erros = new Erro();
         sac.model.Cadastro cadastro = new sac.model.Cadastro();
         sac.model.Pessoa p = new sac.model.Pessoa();
+        String url = "";
+
         Connection connection = ConnectionFactory.getConnection();
 
+        if (request.getParameter("bRegistrar") != null) {
+            sac.model.Cadastro pessoa = (sac.model.Cadastro) request.getAttribute("cadastro");
+
+            String nome = request.getParameter("nome");
+            String descricao = request.getParameter("descricao");
+
+            Float peso = null;
+            String peso_ = request.getParameter("peso");
+            if (peso_ != null && !peso_.isEmpty()) {
+                peso = Float.parseFloat(peso_);
+            }
+
+            Integer categoria_id = 0;
+            String categoria_ = request.getParameter("categoria_id");
+            if (categoria_ != null && !categoria_.isEmpty()) {
+                categoria_id = Integer.parseInt(categoria_);
+            }
+            Integer produto_id = 0;
+            String produto_ = request.getParameter("produto_id");
+            if (produto_ != null && !produto_.isEmpty()) {
+                produto_id = Integer.parseInt(produto_);
+            }
+
+            if (nome == null || nome.isEmpty()) {
+                erros.add("'Nome é obrigatório!'");
+            }
+            if ((action.equals("/Novo_Produto") || action.equals("/Update_Produto")) && (categoria_id == 0)) {
+                erros.add("'Categoria é obrigatório!'");
+            }
+
+            if (!erros.isExisteErros()) {
+                if (action.equals("/Novo_Categoria")) {
+                    try {
+                        CategoriaDAO daoCategoria = new CategoriaDAO(connection);
+                        Categoria categoria = new Categoria(categoria_id, nome);
+                        if (categoria_id == 0) {
+                            categoria.setCategoria_id(daoCategoria.insert(categoria));
+                        } else {
+                            daoCategoria.update(categoria);
+                        }
+
+                        url = "/Categoria";
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (action.equals("/Novo_Produto") || produto_id > 0) {
+                    try {
+                        ProdutoDAO daoProduto = new ProdutoDAO(connection);
+                        Produto produto = new Produto(produto_id, categoria_id, nome, descricao, peso);
+                        if (produto_id == 0) {
+                            produto.setProduto_id(daoProduto.insert(produto));
+                        } else {
+                            daoProduto.update(produto);
+                        }
+
+                        url = "/Produto";
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                cadastro.setCategoria_id(categoria_id);
+                cadastro.setProduto_id(produto_id);
+                cadastro.setNome(nome);
+                cadastro.setPeso(peso);
+                cadastro.setDescricao(descricao);
+            }
+        }
         if (request.getParameter("bSalvar") != null) {
             try {
                 String nome = request.getParameter("nome");
@@ -72,12 +141,19 @@ public class AlterarDados extends HttpServlet {
                 String cep = request.getParameter("cep");
                 String estado = request.getParameter("estado_id");
                 String cidade_id = request.getParameter("cidade_id");
+                String perfil = request.getParameter("perfil_id");
                 String endereco_ = request.getParameter("endereco_id");
                 String id_pessoa = request.getParameter("pessoa_id");
+                String usuario = request.getParameter("usuario_id");
 
                 Integer cidade = 0;
                 if (!cidade_id.isEmpty()) {
                     cidade = Integer.parseInt(cidade_id);
+                }
+
+                Integer perfil_id = 0;
+                if (!perfil.isEmpty()) {
+                    perfil_id = Integer.parseInt(perfil);
                 }
 
                 Integer endereco_id = 0;
@@ -90,10 +166,18 @@ public class AlterarDados extends HttpServlet {
                     pessoa_id = Integer.parseInt(id_pessoa);
                 }
 
+                Integer usuario_id = 0;
+                if (!usuario.isEmpty()) {
+                    usuario_id = Integer.parseInt(usuario);
+                }
+
                 String email = request.getParameter("email");
                 String password = request.getParameter("senha");
                 String password_conf = request.getParameter("conf_senha");
 
+                if (perfil == null || perfil.isEmpty()) {
+                    erros.add("'Selecione um perfil!'");
+                }
                 if (nome == null || nome.isEmpty()) {
                     erros.add("'Nome é obrigatório!'");
                 }
@@ -135,13 +219,22 @@ public class AlterarDados extends HttpServlet {
                     erros.add("'Confirmação de senha inválida'");
                 }
 
+                UsuarioDAO daoUser = new UsuarioDAO(connection);
+                Usuario user = daoUser.getSingle(email);
+                if (user != null && usuario_id == 0) {
+                    erros.add("'E-mail já cadastrado'");
+                }
+
                 if (!erros.isExisteErros()) {
-                    Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), user.getPerfil_Id());
+                    Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), perfil_id);
 
                     if (user != null) {
                         pessoa.setUsuario_Id(user.getUsuario_Id());
-                        //TODO: PRECISA FAZER O UPDATE DE EMAIL E SENHA
-                    } 
+                    } else {
+                        user = new Usuario(email, password);
+                        user.setPerfil_Id(perfil_id);
+                        pessoa.setUsuario_Id(daoUser.insert(user));
+                    }
 
                     EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
                     Endereco endereco = new Endereco(endereco_id, cidade, rua, numero, complemento, bairro, cep);
@@ -161,12 +254,12 @@ public class AlterarDados extends HttpServlet {
                         pessoaDAO.update(pessoa);
                     }
 
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Dashboard");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Funcionario");
                     dispatcher.forward(request, response);
                 } else {
                     p.setPessoa_id(pessoa_id);
                     p.setEndereco_id(endereco_);
-                    p.setUsuario_id(user.getUsuario_Id());
+                    p.setUsuario_id(usuario_id);
                     p.setBairro(bairro);
                     p.setCep(cep);
                     p.setComplemento(complemento);
@@ -185,28 +278,40 @@ public class AlterarDados extends HttpServlet {
                 Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        try {
-            PessoaDAO pessoaDAO = new PessoaDAO(connection);
-            p = pessoaDAO.getPessoaByUserId(user.getUsuario_Id());
-            if (p != null) {
-                EstadoDAO estadoDAO = new EstadoDAO(connection);
-                List<Estado> estados = estadoDAO.getList(1);
-                Estados e = new Estados(estados);
-                request.setAttribute("estados", e);
 
-                CidadeDAO cidadeDAO = new CidadeDAO(connection);
-                List<sac.domain.Cidade> cidades = cidadeDAO.getList(p.getEstado_id().toString());
-                e.setCidades(cidades);
-            } 
-        } catch (SQLException ex) {
-            
+        if (url.isEmpty()) {
+            if (action.equals("/Novo_Categoria")) {
+                url = "/jsp/novo_categoria.jsp";
+            } else if (action.equals("/Novo_Produto")) {
+                try {
+                    CategoriaDAO catDAO = new CategoriaDAO(connection);
+                    List<Categoria> categorias;
+                    categorias = catDAO.getList();
+                    Categorias c = new Categorias(categorias);
+                    request.setAttribute("categorias", c);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                url = "/jsp/novo_produto.jsp";
+            } else if (action.equals("/Novo_Funcionario")) {
+                try {
+                    EstadoDAO estadoDAO = new EstadoDAO(connection);
+                    List<Estado> estados = estadoDAO.getList(1);
+                    Estados e = new Estados(estados);
+                    request.setAttribute("estados", e);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                url = "/jsp/novo_funcionario.jsp";
+            }
         }
+
         request.setAttribute("mensagens", erros);
         request.setAttribute("cadastro", cadastro);
-        request.setAttribute("pessoa", p);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/alteracao_dados.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
 
@@ -222,11 +327,10 @@ public class AlterarDados extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(AlterarDados.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Novo_.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -244,7 +348,7 @@ public class AlterarDados extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(AlterarDados.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Novo_.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

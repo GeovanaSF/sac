@@ -124,11 +124,12 @@
                                 <jsp:setProperty name="atendimento" property="*" />
                             </jsp:useBean>
 
+                            <input type="hidden" id="atendimento_id" name="atendimento_id" value="${atendimento.atendimento_id}">
                             <div class="input-group mb-1 col-6">
 
                                 <jsp:useBean id="produtos" class="sac.model.Produtos" scope="request"/>
 
-                                <select class="custom-select form-control-border" id="produto_id" name="produto_id" value="${atendimento.produto_id}" placeholder="Selecione o produto">
+                                <select class="custom-select form-control-border" id="produto_id" name="produto_id" value="${atendimento.produto_id}" placeholder="Selecione o produto" ${usuarioLogado.perfil_Id != 1 ? "readonly" : ""}>
                                     <c:if test="${atendimento.produto_id == 0}">
                                         <option selected="selected">Selecione o produto</option>    
                                     </c:if>
@@ -136,21 +137,15 @@
                                         <option>Selecione o produto</option>    
                                     </c:if>
                                     <c:forEach var="produto" items="${produtos.getProdutos()}">
-                                        <c:if test="${atendimento.produto_id == produto.produto_id}">
-                                            <option selected="selected" value="${produto.produto_id}">${produto.nome}}</option>    
-                                        </c:if>
-
-                                        <c:if test="${atendimento.produto_id != produto.produto_id}">
-                                            <option value="${produto.produto_id}">${produto.nome}</option>
-                                        </c:if>
+                                            <option ${atendimento.produto_id == produto.produto_id ? "selected" : ""} value="${produto.produto_id}">${produto.nome}</option>
                                     </c:forEach>
                                 </select>
-
                             </div>
+                                    
                             <div class="input-group mb-1 col-6">
                                 <jsp:useBean id="tipoatendimentos" class="sac.model.TipoAtendimentos" scope="request"/>
 
-                                <select class="custom-select form-control-border" id="tipoatendimento_id" name="tipoatendimento_id" value="${atendimento.tipoatendimento_id}" placeholder="Estado">
+                                <select class="custom-select form-control-border" id="tipoatendimento_id" name="tipoatendimento_id" value="${atendimento.tipoatendimento_id}" placeholder="Tipo de atendimento" ${usuarioLogado.perfil_Id != 1 ? "readonly" : ""}>
                                     <c:if test="${atendimento.tipoatendimento_id == 0}">
                                         <option selected="selected">Selecione o tipo de atendimento</option>    
                                     </c:if>
@@ -158,23 +153,22 @@
                                         <option>Selecione o produto</option>    
                                     </c:if>
                                     <c:forEach var="tipo" items="${tipoatendimentos.getTipoAtendimentos()}">
-                                        <c:if test="${atendimento.tipoatendimento_id == tipo.tipoAtendimento_id}">
-                                            <option selected="selected" value="${tipo.tipoAtendimento_id}">${tipo.nome}}</option>    
-                                        </c:if>
-
-                                        <c:if test="${atendimento.tipoatendimento_id != tipo.tipoAtendimento_id}">
-                                            <option value="${tipo.tipoAtendimento_id}">${tipo.nome}</option>
-                                        </c:if>
+                                        <option ${atendimento.tipoatendimento_id == tipo.tipoAtendimento_id ? "selected" : ""} value="${tipo.tipoAtendimento_id}">${tipo.nome}</option>    
                                     </c:forEach>
                                 </select>
                             </div>
 
                             <div class="input-group mb-1 col-12">
-                                <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" value="${atendimento.descricao}"></textarea>
+                                <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" ${usuarioLogado.perfil_Id != 1 ? "readonly" : ""}>${atendimento.descricao}</textarea>
                             </div>
+                                   
+                            <div class="input-group mb-1 col-12">
+                                <textarea class="form-control" rows="2" style="resize: none;" id="solucao" name="solucao" placeholder="Solucao" ${usuarioLogado.perfil_Id != 2 ? "readonly" : ""}>${atendimento.solucao}</textarea>
+                            </div>
+                            
                             <div class="col-10"></div>
                             <div class="col-2">
-                                <button type="submit" name="bSalvar" value="salvar" class="btn btn-primary btn-block">Solicitar</button>
+                                <button type="submit" name="bSalvar" value="salvar" class="btn btn-primary btn-block">Salvar</button>
                             </div>
                         </form>
                         <!-- /.row -->

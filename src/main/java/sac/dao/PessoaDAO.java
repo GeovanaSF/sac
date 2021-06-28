@@ -24,6 +24,13 @@ public class PessoaDAO implements DAO<Pessoa> {
     private static final String QUERY_UPDATE = "UPDATE Pessoa SET perfil_id=?, usuario_id=?, endereco_id=?, nome=?, cpf=?, telefone=? WHERE pessoa_id=?";
     private static final String QUERY_REMOVE = "DELETE FROM Pessoa WHERE pessoa_id=?";
     private static final String QUERY_GET = "SELECT pessoa_id,perfil_id, usuario_id, endereco_id, nome, cpf, telefone FROM Pessoa";
+    private static final String QUERY_GETPESSOA = "SELECT \n"
+            + " P.pessoa_id, P.nome, P.cpf, P.telefone, E.cidade_id, C.estado_id, U.usuario_id, U.email, U.senha,\n"
+            + " E.rua, E.numero, E.complemento, E.bairro, E.cep, P.endereco_id, P.perfil_id\n"
+            + " FROM PESSOA P\n"
+            + "JOIN ENDERECO E ON P.endereco_id = E.endereco_id\n"
+            + "JOIN CIDADE C ON E.cidade_id = C.cidade_id\n"
+            + "JOIN USUARIO U ON P.usuario_id = U.usuario_id ";
     private final Connection conn;
 
     public PessoaDAO(Connection conn) throws DAOException {
@@ -49,6 +56,44 @@ public class PessoaDAO implements DAO<Pessoa> {
         } catch (Exception ex) {
 
         }
+        return null;
+    }
+
+    public sac.model.Pessoa getPessoaById(int id) throws DAOException, SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        ps = conn.prepareStatement(QUERY_GETPESSOA + "WHERE pessoa_id = ?");
+        ps.setInt(1, id);
+
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return new sac.model.Pessoa(rs.getInt("pessoa_id"), rs.getString("nome"), rs.getString("cpf"), rs.getString("telefone"),
+                    rs.getInt("cidade_id"), rs.getInt("estado_id"), rs.getString("email"), rs.getString("senha"),
+                    rs.getInt("perfil_id"), rs.getString("rua"), rs.getString("numero"), rs.getString("complemento"),
+                    rs.getString("bairro"), rs.getString("cep"), rs.getString("endereco_id"), rs.getInt("usuario_id"));
+        }
+
+        return null;
+    }
+    
+    public sac.model.Pessoa getPessoaByUserId(int id) throws DAOException, SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        ps = conn.prepareStatement(QUERY_GETPESSOA + "WHERE P.usuario_id = ?");
+        ps.setInt(1, id);
+
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return new sac.model.Pessoa(rs.getInt("pessoa_id"), rs.getString("nome"), rs.getString("cpf"), rs.getString("telefone"),
+                    rs.getInt("cidade_id"), rs.getInt("estado_id"), rs.getString("email"), rs.getString("senha"),
+                    rs.getInt("perfil_id"), rs.getString("rua"), rs.getString("numero"), rs.getString("complemento"),
+                    rs.getString("bairro"), rs.getString("cep"), rs.getString("endereco_id"), rs.getInt("usuario_id"));
+        }
+
         return null;
     }
 
@@ -104,7 +149,7 @@ public class PessoaDAO implements DAO<Pessoa> {
                 Statement.RETURN_GENERATED_KEYS);
         stmt.setInt(1, obj.getPerfil_Id());
         stmt.setInt(2, obj.getUsuario_Id());
-        stmt.setInt(3, obj.getEndereco_Id());
+        stmt.setObject(3, obj.getEndereco_Id());
         stmt.setString(4, obj.getNome());
         stmt.setString(5, obj.getCpf());
         stmt.setString(6, obj.getTelefone());
@@ -124,7 +169,7 @@ public class PessoaDAO implements DAO<Pessoa> {
         PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
         stmt.setInt(1, obj.getPerfil_Id());
         stmt.setInt(2, obj.getUsuario_Id());
-        stmt.setInt(3, obj.getEndereco_Id());
+        stmt.setObject(3, obj.getEndereco_Id());
         stmt.setString(4, obj.getNome());
         stmt.setString(5, obj.getCpf());
         stmt.setString(6, obj.getTelefone());

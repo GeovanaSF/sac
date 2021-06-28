@@ -9,6 +9,8 @@
 <%@page import="sac.domain.Estado"%>
 <%@page import="java.util.List"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -116,23 +118,11 @@
                                     <option value="${estado.estado_id}">${estado.nome}</option>
                                 </c:forEach>
                             </select>
-<!--                            <input class="form-control" type="text" id="estado" name="estado" placeholder="Estado" value="${pessoa.estado_id}">-->
-                            <!--                            <div class="input-group-append">
-                                                            <div class="input-group-text">
-                                                                <span class="far fa-address-book"></span>
-                                                            </div>
-                                                        </div>-->
                         </div>
                         <div class="input-group mb-1 col-6">
                             <select class="custom-select form-control-border" id="cidade_id" name="cidade_id" value="${pessoa.cidade_id}" placeholder="Cidade">
                                 <option selected="selected">Selecione a cidade</option>
                             </select>
-                            <!--                            <input class="form-control" type="text" id="cidade" name="cidade" placeholder="Cidade">
-                                                        <div class="input-group-append">
-                                                            <div class="input-group-text">
-                                                                <span class="far fa-address-book"></span>
-                                                            </div>
-                                                        </div>-->
                         </div>
 
                         <div class="input-group mb-1 col-12">
@@ -195,7 +185,7 @@
                     $.get("Cidade?estado_id=" + id, function (responseJson) {
                         var $select = $("#cidade_id");
                         $select.find("option").remove()
-                        $("<option>").val("").text("Selecione cidade").appendTo($select);
+                        $("<option>").val("").text("Selecione a cidade").appendTo($select);
 
                         $.each(responseJson, function (index, el) {
                             $("<option>").val(el.cidade_id).text(el.nome).appendTo($select);

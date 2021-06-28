@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -122,11 +123,11 @@
                             <!--GERENTE: LISTA TODOS OS FUNCIONARIOS-->
 
                             <sql:query dataSource="${conexao}" var="consulta">
-                                select p.pessoa_id as id, p.nome as nome, p.cpf as cpf, p.telefone as telefone, u.email as email, pf.nome as perfil 
-                                    from pessoa p
-                                    join usuario u on p.usuario_id = u.usuario_id
-                                    join perfil pf on p.perfil_id = pf.perfil_id
-                                    where u.perfil_id <> 1
+                                select p.pessoa_id as id, p.nome as nome, p.cpf as cpf, p.telefone as telefone, u.email as email, pf.nome as perfil , p.usuario_id as usuario_id
+                                from pessoa p
+                                join usuario u on p.usuario_id = u.usuario_id
+                                join perfil pf on p.perfil_id = pf.perfil_id
+                                where u.perfil_id <> 1
                             </sql:query>
 
                             <table class="table table-striped col-12">
@@ -146,8 +147,16 @@
                                             <td>${item.nome}</td>
                                             <td>${item.email}</td>
                                             <td>${item.perfil}</td>
-                                            <td></td>       
-<!--                                            Se id==usuarioLogado_id desabilitado-->
+                                            <td>
+                                                <a  href="Funcionario?id=${item.id}">
+                                                    <i style="margin:5%;" class="fas fa-edit" alt="Editar" data-toggle="tooltip" data-placement="top" title="Editar funcionário"></i>
+                                                </a> 
+
+                                                <c:if test="${item.usuario_id != usuarioLogado.usuario_Id}">
+                                                    <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.id})" data-toggle="tooltip" data-placement="top" title="Excluir funcionário"></i>
+                                                </c:if>
+
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     <c:if test="${fn: length(consulta.rows)==0}">
@@ -171,7 +180,58 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        <script type="text/javascript">
+            $(function () {
+                $('[data-mask]').inputmask();
+                $('[data-toggle="tooltip"]').tooltip();
 
+            <%
+                Erro mensagens = (Erro) request.getAttribute("mensagens");
+            %>
+                var existe = ${mensagens.isExisteErros()};
+                var mensagens = ${mensagens.getErros()};
+                if (existe && mensagens.length > 0)
+                {
+                    $.each(mensagens, function (i, el) {
+                        toastr.error(el)
+                    })
+                }
+
+            });
+
+            function excluir(id) {
+                Swal.fire({
+                    title: 'Deseja excluir?',
+                    text: "Não será possível reverter a ação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim!',
+                    cancelButtonText: 'Não!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.get("Excluir?tipo=categoria&id=" + id, function (responseJson) {
+                            if (responseJson.sucesso) {
+                                Swal.fire(
+                                        'Excluído!',
+                                        'Registro excluído com sucesso.',
+                                        'success'
+                                        ).then(function () {
+                                    location.href = "/SAC_V1/Categoria";
+                                })
+                            } else {
+                                Swal.fire(
+                                        'Falha!',
+                                        'Erro ao excluir registro, tente mais tarde.',
+                                        'error'
+                                        )
+                            }
+                        });
+                    }
+                })
+            }
+        </script>
     </body>
 </html>
 

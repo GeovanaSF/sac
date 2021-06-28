@@ -146,9 +146,10 @@
                                             <td>${item.descricao}</td>
                                             <td>${item.categoria}</td>
                                             <td>
-                                                <a  href="Produto?id=${item.produto_id}"><i style="margin:5%;" class="fas fa-edit" alt="Visualizar"></i></a> 
+                                                <a  href="Produto?id=${item.produto_id}">
+                                                    <i style="margin:5%;" class="fas fa-edit" alt="Visualizar" data-toggle="tooltip" data-placement="top" title="Visualizar produto"></i></a> 
 
-                                                <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.produto_id})"></i>
+                                                <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.produto_id})" data-toggle="tooltip" data-placement="top" title="Excluir produto"></i>
                                             </td>       
                                         </tr>
                                     </c:forEach>
@@ -176,6 +177,7 @@
         <script type="text/javascript">
             $(function () {
                 $('[data-mask]').inputmask();
+                $('[data-toggle="tooltip"]').tooltip();
 
             <%
                 Erro mensagens = (Erro) request.getAttribute("mensagens");

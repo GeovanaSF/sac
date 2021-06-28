@@ -7,12 +7,21 @@ package sac.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sac.dao.AtendimentoDAO;
+import sac.dao.ConnectionFactory;
+import sac.dao.DAOException;
 import sac.domain.Usuario;
+import sac.model.Atendimentos;
+import sac.model.Consultas;
 
 /**
  *
@@ -30,22 +39,31 @@ public class Dashboard extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, DAOException {
 
+        Connection connection = ConnectionFactory.getConnection();
+
+        AtendimentoDAO atDAO = new AtendimentoDAO(connection);
+        Consultas consulta = new Consultas();
         Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
         if (user == null) {
             request.getSession().invalidate();
             response.sendRedirect("/SAC_V1/Login");
             return;
         }
-        if(user.getPerfil_Id() == 1){
+        if (user.getPerfil_Id() == 1) {
             //Carrega dados do cliente
-        }else if(user.getPerfil_Id() == 1){
+            List<Atendimentos> lista = atDAO.getListMeusAtendimentos(user.getUsuario_Id());
+            consulta.setAtendimentos(lista);
+        } else if (user.getPerfil_Id() == 2) {
             //carrega dados do funcionario
-        }else if(user.getPerfil_Id() == 1){
+            List<Atendimentos> lista = atDAO.getListTodosAtendimentosAberto();
+            consulta.setAtendimentos(lista);
+        } else if (user.getPerfil_Id() == 3) {
             //carrega dados do gerente
         }
         
+        request.setAttribute("consulta", consulta);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/dashboard.jsp");
         dispatcher.forward(request, response);
@@ -63,7 +81,11 @@ public class Dashboard extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (DAOException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -77,7 +99,11 @@ public class Dashboard extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (DAOException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

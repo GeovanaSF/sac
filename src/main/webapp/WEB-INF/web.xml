@@ -37,6 +37,10 @@
         <servlet-name>Excluir</servlet-name>
         <servlet-class>sac.controller.Excluir</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Novo_</servlet-name>
+        <servlet-class>sac.controller.Novo_</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -60,9 +64,6 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Novo</servlet-name>
-        <url-pattern>/Novo_Categoria</url-pattern>
-        <url-pattern>/Novo_Produto</url-pattern>
-        <url-pattern>/Novo_Funcionario</url-pattern>
         <url-pattern>/Categoria</url-pattern>
         <url-pattern>/Produto</url-pattern>
         <url-pattern>/Funcionario</url-pattern>
@@ -73,6 +74,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Atendimento</servlet-name>
+        <url-pattern>/Atendimento</url-pattern>
         <url-pattern>/TodosAtendimentos</url-pattern>
         <url-pattern>/TodosAtendimentosAberto</url-pattern>
         <url-pattern>/MeusAtendimentos</url-pattern>
@@ -81,6 +83,12 @@
     <servlet-mapping>
         <servlet-name>Excluir</servlet-name>
         <url-pattern>/Excluir</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Novo_</servlet-name>
+        <url-pattern>/Novo_Categoria</url-pattern>
+        <url-pattern>/Novo_Produto</url-pattern>
+        <url-pattern>/Novo_Funcionario</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

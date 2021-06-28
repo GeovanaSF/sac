@@ -10,11 +10,13 @@ package sac.model;
  * @author geova
  */
 public class Cadastro {
+
     private int produto_id;
     private int categoria_id;
     private String nome;
     private String descricao;
     private float peso;
+    private boolean isEdit;
 
     public int getProduto_id() {
         return produto_id;
@@ -55,6 +57,13 @@ public class Cadastro {
     public void setPeso(float peso) {
         this.peso = peso;
     }
-    
-    
+
+    public boolean isIsEdit() {
+        return isEdit;
+    }
+
+    public void setIsEdit(boolean isEdit) {
+        this.isEdit = isEdit;
+    }
+
 }

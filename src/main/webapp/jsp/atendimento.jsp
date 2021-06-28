@@ -132,7 +132,10 @@
                                         <th class="col-2">Cliente</th>
                                         <th class="col-2">Produto</th>
                                         <th class="col-2">Situação</th>
-                                        <th class="col-2">Ação</th>
+                                        <c:if test="${usuarioLogado.perfil_Id!=3}">
+                                            <th class="col-2">Ação</th>
+                                        </c:if>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -143,20 +146,35 @@
                                             <td>${item.cliente}</td>
                                             <td>${item.produto}</td>
                                             <td>${item.situacaoAtendimento}</td>
-                                            <td>
-                                                <a  href="Atendimento?id=${item.atendimento_id}"><i style="margin:5%;" class="fas fa-eye" alt="Visualizar"></i></a> 
-
-                                                <c:if test="${item.situacaoAtendimento == 'Aberto'}">
-                                                    <i class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.atendimento_id})"></i>
-                                                </c:if>
-                                            </td>       
-                                            <!--Se usuario logado for funcionario aparecer botão de resolver-->
+                                            <c:if test="${usuarioLogado.perfil_Id!=3}">
+                                                <td>
+                                                    <c:if test="${usuarioLogado.perfil_Id==1}">
+                                                        <a  href="Atendimento?id=${item.atendimento_id}">
+                                                            <i style="margin:5%;" class="fas fa-eye" alt="Visualizar"  data-toggle="tooltip" data-placement="top" title="Visualizar atendimento"></i>
+                                                        </a> 
+                                                    </c:if>
+                                                    <c:if test="${item.situacaoAtendimento == 'Aberto' && usuarioLogado.perfil_Id==2}">
+                                                        <a href="ResolucaoAtendimento?id=${item.atendimento_id}">
+                                                            <i style="margin:5%;" class="fas fa-clipboard-check" alt="Resolver" data-toggle="tooltip" data-placement="top" title="Resolver atendimento"></i>
+                                                        </a> 
+                                                    </c:if>
+                                                    <c:if test="${item.situacaoAtendimento == 'Aberto' && usuarioLogado.perfil_Id==1}">
+                                                        <i class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.atendimento_id})" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Excluir"></i>
+                                                    </c:if>
+                                                </td>       
+                                            </c:if>
                                         </tr>
                                     </c:forEach>
 
                                     <c:if test="${consulta.getAtendimentos().size() == 0}"> 
                                         <tr>
-                                            <td colspan="6" style="text-align: center;">Nenhum item encontrado</td>
+                                            <c:if test="${usuarioLogado.perfil_Id!=3}">
+                                                <td colspan="6" style="text-align: center;">Nenhum item encontrado</td>
+                                            </c:if>
+
+                                            <c:if test="${usuarioLogado.perfil_Id==3}">
+                                                <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
+                                            </c:if>
                                         </tr>
                                     </c:if>
                                 </tbody>
@@ -178,6 +196,7 @@
         <script type="text/javascript">
             $(function () {
                 $('[data-mask]').inputmask();
+                $('[data-toggle="tooltip"]').tooltip();
 
             <%
                 Erro mensagens = (Erro) request.getAttribute("mensagens");
@@ -205,7 +224,7 @@
                     });
                 });
             });
-            
+
             function excluir(id) {
                 Swal.fire({
                     title: 'Deseja excluir?',

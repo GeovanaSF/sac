@@ -62,11 +62,11 @@ public class Registrar extends HttpServlet {
             String bairro = request.getParameter("bairro");
             String cep = request.getParameter("cep");
             String estado = request.getParameter("estado_id");
-            String cidade_id = request.getParameter("cidade");
+            String cidade = request.getParameter("cidade_id");
 
-            Integer cidade = 0;
-            if (!cidade_id.isEmpty()) {
-                cidade = Integer.parseInt(cidade_id);
+            Integer cidade_id = 0;
+            if (!cidade.isEmpty()) {
+                cidade_id = Integer.parseInt(cidade);
             }
 
             String email = request.getParameter("email");
@@ -85,7 +85,34 @@ public class Registrar extends HttpServlet {
             if (!password.equals(password_conf)) {
                 erros.add("'Confirmação de senha inválida'");
             }
-
+if (nome == null || nome.isEmpty()) {
+                    erros.add("'Nome é obrigatório!'");
+                }
+                if (cpf == null || cpf.isEmpty()) {
+                    erros.add("'CPF é obrigatório!'");
+                }
+                if (telefone == null || telefone.isEmpty()) {
+                    erros.add("'Telefone é obrigatório!'");
+                }
+                if (rua == null || rua.isEmpty()) {
+                    erros.add("'Rua é obrigatório!'");
+                }
+                if (numero == null || numero.isEmpty()) {
+                    erros.add("'Número é obrigatório!'");
+                }
+                if (bairro == null || bairro.isEmpty()) {
+                    erros.add("'Bairro é obrigatório!'");
+                }
+                if (cep == null || cep.isEmpty()) {
+                    erros.add("'CEP é obrigatório!'");
+                }
+                if (estado == null || estado.isEmpty()) {
+                    erros.add("'Selecione um estado!'");
+                }
+                if (cidade_id == 0) {
+                    erros.add("'Selecione uma cidade!'");
+                }
+                
             UsuarioDAO daoUser = new UsuarioDAO(connection);
             Usuario user = daoUser.getSingle(email);
             if (user != null) {
@@ -99,11 +126,12 @@ public class Registrar extends HttpServlet {
                     pessoa.setUsuario_Id(user.getUsuario_Id());
                 } else {
                     user = new Usuario(email, password);
+                    user.setPerfil_Id(1);
                     pessoa.setUsuario_Id(daoUser.insert(user));
                 }
 
                 EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
-                Endereco endereco = new Endereco(0, cidade, rua, numero, complemento, bairro, cep);
+                Endereco endereco = new Endereco(0, cidade_id, rua, numero, complemento, bairro, cep);
                 pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
 
                 PessoaDAO pessoaDAO = new PessoaDAO(connection);
@@ -125,7 +153,7 @@ public class Registrar extends HttpServlet {
                     p.setEstado_id(Integer.parseInt(estado));
                 }
 
-                p.setCidade_id(cidade);
+                p.setCidade_id(cidade_id);
             }
         }
         request.getSession().invalidate();
@@ -162,6 +190,11 @@ public class Registrar extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            Erro erros = new Erro();
+            sac.model.Pessoa p = new sac.model.Pessoa();
+            request.setAttribute("mensagens", erros);
+            request.setAttribute("pessoa", p);
+
             //adicionar verificação de que se existe não precisa pesquisar de novo
             Connection connection = ConnectionFactory.getConnection();
             EstadoDAO estadoDAO = new EstadoDAO(connection);

@@ -11,7 +11,8 @@ import java.io.Serializable;
  *
  * @author geova
  */
-public class Pessoa implements Serializable{
+public class Pessoa implements Serializable {
+
     private int pessoa_id;
     private String nome;
     private String cpf;
@@ -26,6 +27,30 @@ public class Pessoa implements Serializable{
     private String complemento;
     private String bairro;
     private String cep;
+    private String endereco_id;
+    private int usuario_id;
+
+    public Pessoa() {
+    }
+
+    public Pessoa(int pessoa_id, String nome, String cpf, String telefone, Integer cidade_id, Integer estado_id, String email, String senha, Integer perfil_Id, String rua, String numero, String complemento, String bairro, String cep, String endereco_id, int usuario_id) {
+        this.pessoa_id = pessoa_id;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+        this.cidade_id = cidade_id;
+        this.estado_id = estado_id;
+        this.email = email;
+        this.senha = senha;
+        this.perfil_Id = perfil_Id;
+        this.rua = rua;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.cep = cep;
+        this.endereco_id = endereco_id;
+        this.usuario_id = usuario_id;
+    }
 
     public int getPessoa_id() {
         return pessoa_id;
@@ -138,6 +163,21 @@ public class Pessoa implements Serializable{
     public void setCep(String cep) {
         this.cep = cep;
     }
-    
-    
+
+    public String getEndereco_id() {
+        return endereco_id;
+    }
+
+    public void setEndereco_id(String endereco_id) {
+        this.endereco_id = endereco_id;
+    }
+
+    public int getUsuario_id() {
+        return usuario_id;
+    }
+
+    public void setUsuario_id(int usuario_id) {
+        this.usuario_id = usuario_id;
+    }
+
 }

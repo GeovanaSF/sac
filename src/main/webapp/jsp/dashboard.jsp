@@ -113,107 +113,125 @@
                 <div class="content">
                     <div class="container">
                         <div class="row">
+                            <jsp:useBean id="consulta" class="sac.model.Consultas" scope="request"/>
 
                             <sql:setDataSource var="conexao" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/db_sac" user="sac_user" password="sac_123" />
                             <!--CLIENTE: LISTA TODOS OS ATENDIMENTOS-->
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
-                                <sql:query dataSource="${conexao}" var="consulta">
-                                    select atendimento_id,to_char(datacriacao, 'DD-MM-YYYY HH:mm:ss') as datacriacao,to_char(datafinalizacao, 'DD-MM-YYYY HH:mm:ss') as datafinalizacao,produto_id,descricao from atendimento where cliente_id=${usuarioLogado.usuario_Id} order by dataCriacao
-                                </sql:query>
 
-                                <table class="table table-striped">
+                                <table class="table table-striped col-12">
                                     <thead>
                                         <tr>
                                             <th class="col-1">#</th>
-                                            <th class="col-2">Data Criação</th>
+                                            <th class="col-2">Data criação</th>
                                             <th class="col-2">Data Resolução</th>
                                             <th class="col-2">Produto</th>
-                                            <th class="col-2">Descrição</th>
-                                            <th class="col-2">Ação</th>
+                                            <th class="col-2">Situação</th>
+                                                <c:if test="${usuarioLogado.perfil_Id!=3}">
+                                                <th class="col-2">Ação</th>
+                                                </c:if>
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="item" items="${consulta.rows}">
+                                        <c:forEach var="item" items="${consulta.getAtendimentos()}">
                                             <tr>
                                                 <td>${item.atendimento_id}</td>
-                                                <td>${item.datacriacao}</td>
-                                                <td>${item.datafinalizacao}</td>
-                                                <td>${item.produto_id}</td>
-                                                <td>${item.descricao}</td>     
-                                                <td></td>
+                                                <td>${item.dataCriacao}</td>
+                                                <td>${item.dataResolucao}</td>
+                                                <td>${item.produto}</td>
+                                                <td>${item.situacaoAtendimento}</td>
+                                                <td>
+                                                    <a  href="Atendimento?id=${item.atendimento_id}">
+                                                        <i style="margin:5%;" class="fas fa-eye" alt="Visualizar"  data-toggle="tooltip" data-placement="top" title="Visualizar atendimento"></i>
+                                                    </a> 
+                                                    <c:if test="${item.situacaoAtendimento == 'Aberto'}">
+                                                        <i class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.atendimento_id})" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Excluir"></i>
+                                                    </c:if>
+                                                </td>     
                                             </tr>
                                         </c:forEach>
-                                        <c:if test="${fn: length(consulta.rows)==0}">
+
+                                        <c:if test="${consulta.getAtendimentos().size() == 0}"> 
                                             <tr>
                                                 <td colspan="6" style="text-align: center;">Nenhum item encontrado</td>
                                             </tr>
                                         </c:if>
                                     </tbody>
                                 </table>
-                            </c:if>
 
-                            <!--FUNCIONARIO: LISTA TODOS OS ATENDIMENTOS NÃO RESOLVIDOS-->
-                            <c:if test="${usuarioLogado.perfil_Id == 2}"> 
-                                <sql:query dataSource="${conexao}" var="consulta">
-                                    select atendimento_id,to_char(datacriacao, 'DD-MM-YYYY HH:mm:ss') as datacriacao,to_char(datafinalizacao, 'DD-MM-YYYY HH:mm:ss') as datafinalizacao,produto_id,descricao from atendimento where datafinalizacao is null order by dataCriacao
-                                </sql:query>
-
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th class="col-1">#</th>
-                                            <th class="col-2">Data Criação</th>
-                                            <th class="col-2">Data Resolução</th>
-                                            <th class="col-2">Produto</th>
-                                            <th class="col-2">Descrição</th>
-                                            <th class="col-2"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="item" items="${consulta.rows}">
-                                            <tr>
-                                                <td>${item.atendimento_id}</td>
-                                                <td>${item.datacriacao}</td>
-                                                <td>${item.datafinalizacao}</td>
-                                                <td>${item.produto_id}</td>
-                                                <td>${item.descricao}</td>   
-                                                <td></td>
-                                            </tr>
-                                        </c:forEach>
-                                        <c:if test="${fn: length(consulta.rows)==0}">
-                                            <tr>
-                                                <td colspan="6" style="text-align: center;">Nenhum item encontrado</td>
-                                            </tr>
-                                        </c:if>
-                                    </tbody>
-                                </table>
-                            </c:if>
-                            <!--GERENTE: INFORMA QUANTIDADE DE ATENDIMENTOS EFETUADOS; QTD DE ATEND ABERTOS COM PERCENTAGEM EM RELAÇÃO AO TOTAL; SEPARADOS POR CATEGORIA-->
-                            <c:if test="${usuarioLogado.perfil_Id == 3}"> 
-                                mais complicado a listagem
                             </c:if>
                         </div>
-                        <!-- /.row -->
-                    </div><!-- /.container-fluid -->
-                </div>
-                <!-- /.content -->
+
+                        <!--FUNCIONARIO: LISTA TODOS OS ATENDIMENTOS NÃO RESOLVIDOS-->
+                        <c:if test="${usuarioLogado.perfil_Id == 2}"> 
+
+                            <table class="table table-striped col-12">
+                                <thead>
+                                    <tr>
+                                        <th class="col-1">#</th>
+                                        <th class="col-2">Data criação</th>
+                                        <th class="col-2">Data Resolução</th>
+                                        <th class="col-2">Cliente</th>
+                                        <th class="col-2">Produto</th>
+                                        <th class="col-2">Situação</th>
+                                        <th class="col-2">Ação</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="item" items="${consulta.getAtendimentos()}">
+                                        <tr>
+                                            <td>${item.atendimento_id}</td>
+                                            <td>${item.dataCriacao}</td>
+                                            <td>${item.dataResolucao}</td>
+                                            <td>${item.cliente}</td>
+                                            <td>${item.produto}</td>
+                                            <td>${item.situacaoAtendimento}</td>
+                                            <td>
+                                                <c:if test="${item.situacaoAtendimento == 'Aberto'}">
+                                                    <a href="ResolucaoAtendimento?id=${item.atendimento_id}">
+                                                        <i style="margin:5%;" class="fas fa-clipboard-check" alt="Resolver" data-toggle="tooltip" data-placement="top" title="Resolver atendimento"></i>
+                                                    </a> 
+                                                </c:if>
+                                            </td>    
+                                        </tr>
+                                    </c:forEach>
+
+                                    <c:if test="${consulta.getAtendimentos().size() == 0}"> 
+                                        <tr>
+                                            <td colspan="7" style="text-align: center;">Nenhum item encontrado</td>
+                                        </tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                        </c:if>
+                        <!--GERENTE: INFORMA QUANTIDADE DE ATENDIMENTOS EFETUADOS; QTD DE ATEND ABERTOS COM PERCENTAGEM EM RELAÇÃO AO TOTAL; SEPARADOS POR CATEGORIA-->
+                        <c:if test="${usuarioLogado.perfil_Id == 3}"> 
+                            mais complicado a listagem
+                        </c:if>
+                    </div>
+                    <!-- /.row -->
+                </div><!-- /.container-fluid -->
             </div>
-            <!-- /.content-wrapper -->
-
+            <!-- /.content -->
         </div>
-        <!-- ./wrapper -->
+        <!-- /.content-wrapper -->
+
+    </div>
+    <!-- ./wrapper -->
 
 
-        <jsp:include page="footer_scripts.jsp" />
+    <jsp:include page="footer_scripts.jsp" />
 
-        <script type="text/javascript">
-            $(function () {
-                $('[data-mask]').inputmask();
+    <script type="text/javascript">
+        $(function () {
+            $('[data-mask]').inputmask();
 //                $(".ignore-click").click(function () {
 //                    return false;
 //                });
-            });
-        </script>
+        });
+    </script>
 
-    </body>
+</body>
 </html>

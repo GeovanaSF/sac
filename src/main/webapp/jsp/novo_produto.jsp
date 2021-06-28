@@ -117,11 +117,11 @@
                 <!-- Main content -->
                 <div class="content">
                     <div class="container">
+                        <jsp:useBean id="cadastro" class="sac.model.Cadastro" scope="request">
+                            <jsp:setProperty name="cadastro" property="*" />
+                        </jsp:useBean>
                         <form class="" action="Novo_Produto" method="post">
                             <div class="row">
-                                <jsp:useBean id="cadastro" class="sac.model.Cadastro" scope="request">
-                                    <jsp:setProperty name="cadastro" property="*" />
-                                </jsp:useBean>
                                 <div class="col-5"><!-- comment -->
                                     <!-- comment -->
                                     <div class="input-group mb-1 col-12">
@@ -148,7 +148,7 @@
                                             <option value="">Selecione categoria</option>    
                                         </c:if>
                                         <c:forEach var="categoria" items="${categorias.getCategorias()}">
-                                            <option value="${categoria.categoria_id}">${categoria.nome}</option>
+                                            <option ${categoria.categoria_id==cadastro.categoria_id ? "selected": ""} value="${categoria.categoria_id}">${categoria.nome}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -176,10 +176,10 @@
                 $('[data-mask]').inputmask();
 
             <%
-                        Erro mensagens = (Erro) request.getAttribute("mensagens");
+                Erro mensagens = (Erro) request.getAttribute("mensagens");
             %>
-        var existe = ${mensagens.isExisteErros()};
-        var mensagens = ${mensagens.getErros()};
+                var existe = ${mensagens.isExisteErros()};
+                var mensagens = ${mensagens.getErros()};
                 if (existe && mensagens.length > 0)
                 {
                     $.each(mensagens, function (i, el) {
