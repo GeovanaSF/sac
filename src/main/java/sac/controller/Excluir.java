@@ -22,6 +22,8 @@ import sac.dao.CategoriaDAO;
 import sac.dao.CidadeDAO;
 import sac.dao.ConnectionFactory;
 import sac.dao.DAOException;
+import sac.dao.PessoaDAO;
+import sac.dao.ProdutoDAO;
 import sac.util.Retorno;
 
 /**
@@ -53,14 +55,27 @@ public class Excluir extends HttpServlet {
 
                 AtendimentoDAO dao = new AtendimentoDAO(connection);
                 dao.remove(id);
-            }else if (tipo.equals("categoria")) {
+                retorno.setSucesso(true);
+            } else if (tipo.equals("categoria")) {
                 int id = Integer.parseInt(_id);
 
                 CategoriaDAO dao = new CategoriaDAO(connection);
                 dao.remove(id);
+                retorno.setSucesso(true);
+            } else if (tipo.equals("funcionario")) {
+                int id = Integer.parseInt(_id);
+
+                PessoaDAO dao = new PessoaDAO(connection);
+                dao.remove(id);
+                retorno.setSucesso(true);
+            } else if (tipo.equals("produto")) {
+                int id = Integer.parseInt(_id);
+
+                ProdutoDAO dao = new ProdutoDAO(connection);
+                dao.remove(id);
+                retorno.setSucesso(true);
             }
 
-            retorno.setSucesso(true);
         } catch (DAOException ex) {
             retorno.setSucesso(false);
         } catch (SQLException ex) {

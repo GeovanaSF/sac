@@ -54,12 +54,12 @@ public class AlterarDados extends HttpServlet {
             response.sendRedirect("/SAC_V1/Login");
             return;
         }
-        
+
         Erro erros = new Erro();
         sac.model.Cadastro cadastro = new sac.model.Cadastro();
         sac.model.Pessoa p = new sac.model.Pessoa();
         Connection connection = ConnectionFactory.getConnection();
-
+        String url = "/jsp/alteracao_dados.jsp";
         if (request.getParameter("bSalvar") != null) {
             try {
                 String nome = request.getParameter("nome");
@@ -97,9 +97,9 @@ public class AlterarDados extends HttpServlet {
                 if (nome == null || nome.isEmpty()) {
                     erros.add("'Nome é obrigatório!'");
                 }
-                if (cpf == null || cpf.isEmpty()) {
-                    erros.add("'CPF é obrigatório!'");
-                }
+//                if (cpf == null || cpf.isEmpty()) {
+//                    erros.add("'CPF é obrigatório!'");
+//                }
                 if (telefone == null || telefone.isEmpty()) {
                     erros.add("'Telefone é obrigatório!'");
                 }
@@ -122,26 +122,26 @@ public class AlterarDados extends HttpServlet {
                     erros.add("'Selecione uma cidade!'");
                 }
 
-                if (email == null || email.isEmpty()) {
-                    erros.add("'E-mail não informado!'");
-                }
+//                if (email == null || email.isEmpty()) {
+//                    erros.add("'E-mail não informado!'");
+//                }
                 if (password == null || password.isEmpty()) {
                     erros.add("'Senha não informada!'");
                 }
                 if (password_conf == null || password_conf.isEmpty()) {
-                    erros.add("'Senha não informada!'");
+                    erros.add("'Confirmação de senha não informada!'");
                 }
-                if (!password.equals(password_conf)) {
+                if (!(password == null || password.isEmpty()) && !(password_conf == null || password_conf.isEmpty()) && !password.equals(password_conf)) {
                     erros.add("'Confirmação de senha inválida'");
                 }
 
                 if (!erros.isExisteErros()) {
-                    Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), user.getPerfil_Id());
+                    Pessoa pessoa = new Pessoa(pessoa_id, nome, telefone.replaceAll("[^0-9?!\\.]", ""));
 
                     if (user != null) {
                         pessoa.setUsuario_Id(user.getUsuario_Id());
-                        //TODO: PRECISA FAZER O UPDATE DE EMAIL E SENHA
-                    } 
+                        //TODO: PRECISA FAZER O UPDATE DA SENHA
+                    }
 
                     EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
                     Endereco endereco = new Endereco(endereco_id, cidade, rua, numero, complemento, bairro, cep);
@@ -158,11 +158,9 @@ public class AlterarDados extends HttpServlet {
                         pessoa_id = pessoaDAO.insert(pessoa);
                     } else {
                         pessoa.setPessoa_Id(pessoa_id);
-                        pessoaDAO.update(pessoa);
+                        pessoaDAO.updateDados(pessoa);
                     }
-
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Dashboard");
-                    dispatcher.forward(request, response);
+                    url = "/Dashboard";
                 } else {
                     p.setPessoa_id(pessoa_id);
                     p.setEndereco_id(endereco_);
@@ -185,7 +183,7 @@ public class AlterarDados extends HttpServlet {
                 Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         try {
             PessoaDAO pessoaDAO = new PessoaDAO(connection);
             p = pessoaDAO.getPessoaByUserId(user.getUsuario_Id());
@@ -198,15 +196,15 @@ public class AlterarDados extends HttpServlet {
                 CidadeDAO cidadeDAO = new CidadeDAO(connection);
                 List<sac.domain.Cidade> cidades = cidadeDAO.getList(p.getEstado_id().toString());
                 e.setCidades(cidades);
-            } 
+            }
         } catch (SQLException ex) {
-            
+
         }
         request.setAttribute("mensagens", erros);
         request.setAttribute("cadastro", cadastro);
         request.setAttribute("pessoa", p);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/alteracao_dados.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
 

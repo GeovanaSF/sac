@@ -118,13 +118,13 @@
                             <jsp:useBean id="pessoa" class="sac.model.Pessoa" scope="request">
                                 <jsp:setProperty name="pessoa" property="*" />
                             </jsp:useBean>
-                            
+
                             <input type="hidden" id="pessoa_id" name="pessoa_id" value="${pessoa.pessoa_id}">
                             <input type="hidden" id="endereco_id" name="endereco_id" value="${pessoa.endereco_id}">
                             <input type="hidden" id="usuario_id" name="usuario_id" value="${pessoa.usuario_id}">
 
                             <div class="input-group mb-1 col-12">
-                                <input type="text" class="form-control" id="name" placeholder="Nome completo" value="${pessoa.nome}">
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome completo" value="${pessoa.nome}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-user"></span>
@@ -133,7 +133,8 @@
                             </div>
 
                             <div class="input-group mb-1 col-6">
-                                <input class="form-control" type="text" id="cpf" placeholder="CPF" data-inputmask='"mask": "999.999.999-99"' data-mask readonly="readonly" value="${pessoa.cpf}">
+                                <span class="form-control" data-inputmask='"mask": "999.999.999-99"' data-mask style="background-color: #ddd;">${pessoa.cpf}</span>
+<!--                                <input class="form-control" type="text" id="cpf" name="cpf" placeholder="CPF" data-inputmask='"mask": "999.999.999-99"' data-mask value="${pessoa.cpf}">-->
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="far fa-id-card"></span>
@@ -141,7 +142,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-6">
-                                <input class="form-control" type="text" id="telefone" placeholder="Telefone" data-inputmask='"mask": "(99) 99999-9999"' data-mask value="${pessoa.telefone}">
+                                <input class="form-control" type="text" id="telefone" name="telefone" placeholder="Telefone" data-inputmask='"mask": "(99) 99999-9999"' data-mask value="${pessoa.telefone}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-phone"></span>
@@ -150,7 +151,7 @@
                             </div>
 
                             <div class="input-group mb-1 col-9">
-                                <input class="form-control" type="text" id="rua" placeholder="Rua" value="${pessoa.rua}">
+                                <input class="form-control" type="text" id="rua" name="rua" placeholder="Rua" value="${pessoa.rua}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="far fa-address-book"></span>
@@ -158,7 +159,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-3">
-                                <input class="form-control" type="text" id="numero" placeholder="Número" value="${pessoa.numero}">
+                                <input class="form-control" type="text" id="numero" name="numero" placeholder="Número" value="${pessoa.numero}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="far fa-address-book"></span>
@@ -166,7 +167,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-3">
-                                <input class="form-control" type="text" id="complemento" placeholder="Complemento" value="${pessoa.complemento}">
+                                <input class="form-control" type="text" id="complemento" name="complemento" placeholder="Complemento" value="${pessoa.complemento}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="far fa-address-book"></span>
@@ -174,7 +175,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-5">
-                                <input class="form-control" type="text" id="bairro" placeholder="Bairro" value="${pessoa.bairro}">
+                                <input class="form-control" type="text" id="bairro" name="bairro" placeholder="Bairro" value="${pessoa.bairro}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="far fa-address-book"></span>
@@ -182,7 +183,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-4">
-                                <input class="form-control" type="text" id="cep" placeholder="CEP" value="${pessoa.cep}">
+                                <input class="form-control" type="text" id="cep" name="cep" placeholder="CEP" data-inputmask='"mask": "99999-999"' data-mask value="${pessoa.cep}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="far fa-address-book"></span>
@@ -221,7 +222,8 @@
                             </div>
 
                             <div class="input-group mb-1 col-12">
-                                <input type="email" class="form-control" id="email" placeholder="Email" readonly="readonly" value="${pessoa.email}">
+                                <span class="form-control" style="background-color: #ddd;" >${pessoa.email}</span>
+<!--                                <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="${pessoa.email}">-->
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-envelope"></span>
@@ -229,7 +231,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-6">
-                                <input type="password" class="form-control" id="senha" placeholder="Senha" value="${pessoa.senha}">
+                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" value="${pessoa.senha}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-lock"></span>
@@ -237,7 +239,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-1 col-6">
-                                <input type="password" class="form-control" id="conf_senha" placeholder="Confirmação senha" value="${pessoa.senha}">
+                                <input type="password" class="form-control" id="conf_senha" name="conf_senha" placeholder="Confirmação senha" value="${pessoa.senha}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-lock"></span>

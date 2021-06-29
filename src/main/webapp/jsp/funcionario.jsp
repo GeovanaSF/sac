@@ -211,7 +211,7 @@
                     cancelButtonText: 'Não!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $.get("Excluir?tipo=categoria&id=" + id, function (responseJson) {
+                        $.get("Excluir?tipo=funcionario&id=" + id, function (responseJson) {
                             if (responseJson.sucesso) {
                                 Swal.fire(
                                         'Excluído!',

@@ -39,6 +39,13 @@ public class Pessoa implements Serializable{
         this.perfil_Id = perfil_Id;
     }
 
+    public Pessoa(Integer pessoa_Id, String nome, String telefone) {
+        this.pessoa_Id = pessoa_Id;
+        this.nome = nome;
+        this.telefone = telefone;
+    }
+    
+
     public Pessoa() {
         
     }

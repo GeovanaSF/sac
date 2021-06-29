@@ -208,7 +208,7 @@
                         </c:if>
                         <!--GERENTE: INFORMA QUANTIDADE DE ATENDIMENTOS EFETUADOS; QTD DE ATEND ABERTOS COM PERCENTAGEM EM RELAÇÃO AO TOTAL; SEPARADOS POR CATEGORIA-->
                         <c:if test="${usuarioLogado.perfil_Id == 3}"> 
-                            mais complicado a listagem
+                           
                         </c:if>
                     </div>
                     <!-- /.row -->

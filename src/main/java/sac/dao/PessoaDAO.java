@@ -22,6 +22,7 @@ public class PessoaDAO implements DAO<Pessoa> {
 
     private static final String QUERY_INSERT = "INSERT INTO Pessoa (perfil_id, usuario_id, endereco_id, nome, cpf, telefone) VALUES (?,?,?,?,?,?)";
     private static final String QUERY_UPDATE = "UPDATE Pessoa SET perfil_id=?, usuario_id=?, endereco_id=?, nome=?, cpf=?, telefone=? WHERE pessoa_id=?";
+    private static final String QUERY_UPDATE_ = "UPDATE Pessoa SET nome=?, telefone=? WHERE pessoa_id=?";
     private static final String QUERY_REMOVE = "DELETE FROM Pessoa WHERE pessoa_id=?";
     private static final String QUERY_GET = "SELECT pessoa_id,perfil_id, usuario_id, endereco_id, nome, cpf, telefone FROM Pessoa";
     private static final String QUERY_GETPESSOA = "SELECT \n"
@@ -176,6 +177,16 @@ public class PessoaDAO implements DAO<Pessoa> {
         stmt.setInt(7, obj.getPessoa_Id());
         stmt.executeUpdate();
     }
+    
+    
+    public void updateDados(Pessoa obj) throws DAOException, SQLException {
+        PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE_);
+        stmt.setString(1, obj.getNome());
+        stmt.setString(2, obj.getTelefone());
+        stmt.setInt(3, obj.getPessoa_Id());
+        stmt.executeUpdate();
+    }
+    
 
     @Override
     public void remove(int id) throws DAOException, SQLException {

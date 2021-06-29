@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
     <!-- Map all /resources requests to the Resource Servlet for handling -->
+    <filter>
+        <filter-name>UsuarioLogado</filter-name>
+        <filter-class>sac.filter.UsuarioLogado</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>Cidade</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>Novo_</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>Excluir</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>Atendimento</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>Novo</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>AlterarDados</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UsuarioLogado</filter-name>
+        <servlet-name>Dashboard</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
     <servlet>
         <servlet-name>Login</servlet-name>
         <servlet-class>sac.controller.Login</servlet-class>

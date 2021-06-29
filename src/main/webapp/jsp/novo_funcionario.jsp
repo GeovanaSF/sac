@@ -262,7 +262,7 @@
                             </div>
                             <div class="col-10"></div>
                             <div class="col-2">
-                                <button type="submit" name="bSalvar" value="salvar" class="btn btn-primary btn-block">Registrar</button>
+                                <button type="submit" name="bSalvar" value="salvar" class="btn btn-primary btn-block">Salvar</button>
                             </div>
                         </form>
                         <!-- /.row -->
