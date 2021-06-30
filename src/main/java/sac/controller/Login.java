@@ -20,12 +20,12 @@ import sac.dao.DAOException;
 import sac.dao.UsuarioDAO;
 import sac.domain.Usuario;
 import sac.util.Erro;
+import sac.util.Password;
 
 /**
  *
  * @author geova
  */
-
 public class Login extends HttpServlet {
 
     /**
@@ -55,7 +55,9 @@ public class Login extends HttpServlet {
                 UsuarioDAO dao = new UsuarioDAO(connection);
                 Usuario user = dao.getSingle(email);
                 if (user != null) {
-                    if (user.getSenha().equalsIgnoreCase(password)) {
+                    boolean passwordMatch = Password.verifyUserPassword(password, user.getSenha(), user.getKey());
+
+                    if (passwordMatch) {
                         request.getSession().setAttribute("usuarioLogado", user);
                         response.sendRedirect("/SAC_V1/Dashboard");
                         return;

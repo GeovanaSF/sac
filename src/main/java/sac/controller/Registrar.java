@@ -6,7 +6,6 @@
 package sac.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -29,6 +28,7 @@ import sac.domain.Pessoa;
 import sac.domain.Usuario;
 import sac.model.Estados;
 import sac.util.Erro;
+import sac.util.Password;
 
 /**
  *
@@ -85,34 +85,34 @@ public class Registrar extends HttpServlet {
             if (!password.equals(password_conf)) {
                 erros.add("'Confirmação de senha inválida'");
             }
-if (nome == null || nome.isEmpty()) {
-                    erros.add("'Nome é obrigatório!'");
-                }
-                if (cpf == null || cpf.isEmpty()) {
-                    erros.add("'CPF é obrigatório!'");
-                }
-                if (telefone == null || telefone.isEmpty()) {
-                    erros.add("'Telefone é obrigatório!'");
-                }
-                if (rua == null || rua.isEmpty()) {
-                    erros.add("'Rua é obrigatório!'");
-                }
-                if (numero == null || numero.isEmpty()) {
-                    erros.add("'Número é obrigatório!'");
-                }
-                if (bairro == null || bairro.isEmpty()) {
-                    erros.add("'Bairro é obrigatório!'");
-                }
-                if (cep == null || cep.isEmpty()) {
-                    erros.add("'CEP é obrigatório!'");
-                }
-                if (estado == null || estado.isEmpty()) {
-                    erros.add("'Selecione um estado!'");
-                }
-                if (cidade_id == 0) {
-                    erros.add("'Selecione uma cidade!'");
-                }
-                
+            if (nome == null || nome.isEmpty()) {
+                erros.add("'Nome é obrigatório!'");
+            }
+            if (cpf == null || cpf.isEmpty()) {
+                erros.add("'CPF é obrigatório!'");
+            }
+            if (telefone == null || telefone.isEmpty()) {
+                erros.add("'Telefone é obrigatório!'");
+            }
+            if (rua == null || rua.isEmpty()) {
+                erros.add("'Rua é obrigatório!'");
+            }
+            if (numero == null || numero.isEmpty()) {
+                erros.add("'Número é obrigatório!'");
+            }
+            if (bairro == null || bairro.isEmpty()) {
+                erros.add("'Bairro é obrigatório!'");
+            }
+            if (cep == null || cep.isEmpty()) {
+                erros.add("'CEP é obrigatório!'");
+            }
+            if (estado == null || estado.isEmpty()) {
+                erros.add("'Selecione um estado!'");
+            }
+            if (cidade_id == 0) {
+                erros.add("'Selecione uma cidade!'");
+            }
+
             UsuarioDAO daoUser = new UsuarioDAO(connection);
             Usuario user = daoUser.getSingle(email);
             if (user != null) {
@@ -125,8 +125,15 @@ if (nome == null || nome.isEmpty()) {
                 if (user != null) {
                     pessoa.setUsuario_Id(user.getUsuario_Id());
                 } else {
-                    user = new Usuario(email, password);
+                    // Generate Salt. The generated value can be stored in DB. 
+                    String salt = Password.getSalt(30);
+                    // Protect user's password. The generated value can be stored in DB.
+                    String mySecurePassword = Password.generateSecurePassword(password, salt);
+
+                    user = new Usuario(email, mySecurePassword);
                     user.setPerfil_Id(1);
+                    user.setKey(salt);
+
                     pessoa.setUsuario_Id(daoUser.insert(user));
                 }
 

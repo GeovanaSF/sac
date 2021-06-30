@@ -34,6 +34,7 @@ import sac.domain.Usuario;
 import sac.model.Categorias;
 import sac.model.Estados;
 import sac.util.Erro;
+import sac.util.Password;
 
 /**
  *
@@ -231,7 +232,13 @@ public class Novo_ extends HttpServlet {
                     if (user != null) {
                         pessoa.setUsuario_Id(user.getUsuario_Id());
                     } else {
-                        user = new Usuario(email, password);
+                        // Generate Salt. The generated value can be stored in DB. 
+                        String salt = Password.getSalt(30);
+                        // Protect user's password. The generated value can be stored in DB.
+                        String mySecurePassword = Password.generateSecurePassword(password, salt);
+
+                        user = new Usuario(email, mySecurePassword);
+                        
                         user.setPerfil_Id(perfil_id);
                         pessoa.setUsuario_Id(daoUser.insert(user));
                     }

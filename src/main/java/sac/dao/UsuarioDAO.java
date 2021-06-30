@@ -22,13 +22,13 @@ import java.util.logging.Logger;
  */
 public class UsuarioDAO implements DAO<Usuario> {
 
-    private static final String QUERY_INSERT = "INSERT INTO Usuario (email, senha, perfil_id) VALUES (?,?,?)";
-    private static final String QUERY_UPDATE = "UPDATE Usuario SET email=?, senha=?, perfil_id=? WHERE usuario_id=?";
+    private static final String QUERY_INSERT = "INSERT INTO Usuario (email, senha, salt, perfil_id) VALUES (?,?,?,?)";
+    private static final String QUERY_UPDATE = "UPDATE Usuario SET email=?, senha=?, salt=?, perfil_id=? WHERE usuario_id=?";
     private static final String QUERY_DELETE = "DELETE FROM Usuario WHERE usuario_id=?";
 
-    private static final String QUERY_LIST = "SELECT usuario_id, email, senha, perfil_id from usuario";
+    private static final String QUERY_LIST = "SELECT usuario_id, email, senha, salt, perfil_id from usuario";
 
-    private static final String QUERY_GETSINGLE = "select usuario_id, email, senha, perfil_id from usuario where email = ?";
+    private static final String QUERY_GETSINGLE = "select usuario_id, email, senha, salt, perfil_id from usuario where email = ?";
 
     private final Connection conn;
 
@@ -46,7 +46,7 @@ public class UsuarioDAO implements DAO<Usuario> {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new Usuario(rs.getInt("usuario_id"),
-                        rs.getString("email"), rs.getString("senha"), rs.getInt("perfil_id"));
+                        rs.getString("email"), rs.getString("senha"), rs.getString("salt"), rs.getInt("perfil_id"));
             }
         } catch (SQLException ex) {
         }
@@ -61,10 +61,10 @@ public class UsuarioDAO implements DAO<Usuario> {
         ResultSet rs = null;
         try {
             ps = conn.createStatement();
-            rs = ps.executeQuery("select usuario_id, email, senha, perfil_id from usuario");
+            rs = ps.executeQuery("select usuario_id, email, senha, salt, perfil_id from usuario");
             lista = new ArrayList<>();
             while (rs.next()) {
-                lista.add(new Usuario(rs.getInt("usuario_id"), rs.getString("email"), rs.getString("senha"), rs.getInt("perfil_id")));
+                lista.add(new Usuario(rs.getInt("usuario_id"), rs.getString("email"), rs.getString("senha"), rs.getString("salt"), rs.getInt("perfil_id")));
             }
         } catch (SQLException ex) {
         } finally {
@@ -82,7 +82,7 @@ public class UsuarioDAO implements DAO<Usuario> {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new Usuario(rs.getInt("usuario_id"),
-                        rs.getString("email"), rs.getString("senha"), rs.getInt("perfil_id"));
+                        rs.getString("email"), rs.getString("senha"), rs.getString("salt"), rs.getInt("perfil_id"));
             }
         } catch (SQLException ex) {
         }
@@ -99,7 +99,8 @@ public class UsuarioDAO implements DAO<Usuario> {
                     Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, obj.getEmail());
             stmt.setString(2, obj.getSenha());
-            stmt.setInt(3, obj.getPerfil_Id());
+            stmt.setString(3, obj.getKey());
+            stmt.setInt(4, obj.getPerfil_Id());
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
@@ -120,8 +121,9 @@ public class UsuarioDAO implements DAO<Usuario> {
             PreparedStatement stmt = conn.prepareStatement(QUERY_UPDATE);
             stmt.setString(1, obj.getEmail());
             stmt.setString(2, obj.getSenha());
-            stmt.setInt(3, obj.getPerfil_Id());
-            stmt.setInt(4, obj.getUsuario_Id());
+            stmt.setString(3, obj.getKey());
+            stmt.setInt(4, obj.getPerfil_Id());
+            stmt.setInt(5, obj.getUsuario_Id());
             stmt.executeUpdate();
 
         } catch (SQLException sQLException) {

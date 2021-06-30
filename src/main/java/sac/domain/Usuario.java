@@ -20,10 +20,11 @@ public class Usuario implements Serializable {
     private Integer usuario_Id;
     private String email;
     private String senha;
+    private String key;
     private Integer perfil_Id;
 
     public Usuario() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     public Usuario(String email, String senha) {
@@ -31,11 +32,12 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public Usuario(Integer usuario_Id, String email, String senha, Integer perfil_id) {
+    public Usuario(Integer usuario_Id, String email, String senha, String key, Integer perfil_id) {
         this.usuario_Id = usuario_Id;
         this.email = email;
         this.senha = senha;
         this.perfil_Id = perfil_id;
+        this.key = key;
     }
 
     public Integer getUsuario_Id() {
@@ -69,6 +71,14 @@ public class Usuario implements Serializable {
 
     public void setPerfil_Id(Integer perfil_Id) {
         this.perfil_Id = perfil_Id;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
     
     
