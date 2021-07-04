@@ -51,7 +51,8 @@ public class Cidade extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json);
         } catch (DAOException ex) {
-            Logger.getLogger(Cidade.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 

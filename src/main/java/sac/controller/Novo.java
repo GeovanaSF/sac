@@ -199,7 +199,8 @@ public class Novo extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 
@@ -217,7 +218,8 @@ public class Novo extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 

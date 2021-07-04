@@ -14,6 +14,8 @@
 <!-- InputMask -->
 <script src="jsp/plugins/moment/moment.min.js"></script>
 <script src="jsp/plugins/inputmask/jquery.inputmask.min.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="jsp/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <!-- SweetAlert2 -->
 <script src="jsp/plugins/sweetalert2/sweetalert2.all.min.js"></script>
 <!-- Toastr -->

@@ -150,16 +150,19 @@ public class Atendimento extends HttpServlet {
                     consulta.setAtendimentos(lista);
 
                     url = "/jsp/atendimento.jsp";
+                    request.setAttribute("tipoCor", 1);
                 } else if (action.equals("/TodosAtendimentosAberto")) {
                     List<Atendimentos> lista = atDAO.getListTodosAtendimentosAberto();
                     consulta.setAtendimentos(lista);
 
                     url = "/jsp/atendimento.jsp";
+                    request.setAttribute("tipoCor", 2);
                 } else if (action.equals("/MeusAtendimentos")) {
                     List<Atendimentos> lista = atDAO.getListMeusAtendimentos(user.getUsuario_Id());
                     consulta.setAtendimentos(lista);
 
                     url = "/jsp/atendimento.jsp";
+                    request.setAttribute("tipoCor", 3);
                 } else if (action.equals("/Novo_Atendimento")) {
                     try {
                         ProdutoDAO produtoDAO = new ProdutoDAO(connection);

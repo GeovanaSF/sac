@@ -123,6 +123,7 @@
                     <div class="container">
                         <div class="row">      
                             <jsp:useBean id="consulta" class="sac.model.Consultas" scope="request"/>
+                            <jsp:useBean id="tipoCor" class="java.lang.Integer" scope="request"/>
 
                             <table class="table table-striped col-12">
                                 <thead>
@@ -140,7 +141,7 @@
                                 </thead>
                                 <tbody>
                                     <c:forEach var="item" items="${consulta.getAtendimentos()}">
-                                        <tr>
+                                        <tr ${item.getColorClass(tipoCor)}>
                                             <td>${item.atendimento_id}</td>
                                             <td>${item.dataCriacao}</td>
                                             <td>${item.cliente}</td>

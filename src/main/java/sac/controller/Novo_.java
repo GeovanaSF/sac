@@ -280,7 +280,9 @@ public class Novo_ extends HttpServlet {
                     p.setCidade_id(cidade);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
+            return;
             }
         }
 
@@ -336,7 +338,8 @@ public class Novo_ extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Novo_.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 
@@ -354,7 +357,8 @@ public class Novo_ extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Novo_.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 

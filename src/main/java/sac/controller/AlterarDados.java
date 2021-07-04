@@ -189,7 +189,8 @@ public class AlterarDados extends HttpServlet {
                     p.setCidade_id(cidade);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
             }
         }
 
@@ -235,7 +236,8 @@ public class AlterarDados extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(AlterarDados.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 
@@ -253,7 +255,8 @@ public class AlterarDados extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(AlterarDados.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 

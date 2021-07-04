@@ -7,12 +7,17 @@ package sac.model;
 
 import java.util.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author geova
  */
 public class Atendimentos {
+
     public int atendimento_id;
     public String cliente;
     public String funcionario;
@@ -61,6 +66,32 @@ public class Atendimentos {
         return dataCriacao;
     }
 
+    public String getColorClass(Integer tipoCor) {
+        try {
+            if (dataCriacao == null || dataCriacao.isEmpty() || tipoCor == 3 || situacao == 2) {
+                return "";
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            Date parsedDate = dateFormat.parse(dataCriacao);
+
+            Date actual = new Date();
+            long t = (actual.getTime() - parsedDate.getTime());
+            int diffInDays = (int) ((actual.getTime() - parsedDate.getTime()) / (86400000));
+            if (diffInDays >= 7) {
+                return "class='critical'";
+            }
+            if (diffInDays < 7 && tipoCor != 2) {
+                return "class='warning'";
+            }
+
+            return "";
+        } catch (ParseException ex) {
+            Logger.getLogger(Atendimentos.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
+    }
+
     public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
@@ -89,5 +120,4 @@ public class Atendimentos {
         this.situacaoAtendimento = situacaoAtendimento;
     }
 
-    
 }

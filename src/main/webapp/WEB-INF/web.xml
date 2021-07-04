@@ -136,7 +136,12 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Relatorio</servlet-name>
-        <url-pattern>/Relatorio</url-pattern>
+        <url-pattern>/RelatorioFuncionario</url-pattern>
+        <url-pattern>/RelatorioProduto</url-pattern>
+        <url-pattern>/RelatorioAtendimento</url-pattern>
+        <url-pattern>/GerarRelatorioAtendimento</url-pattern>
+        <url-pattern>/RelatorioReclamacao</url-pattern>
+        <url-pattern>/GerarRelatorioReclamacao</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

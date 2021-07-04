@@ -216,9 +216,11 @@ public class Registrar extends HttpServlet {
 
 //            processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Registrar.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Registrar.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 
@@ -236,9 +238,11 @@ public class Registrar extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Registrar.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Registrar.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("erro.jsp").forward(request, response);
         }
     }
 
