@@ -6,7 +6,6 @@
 package sac.model;
 
 import java.util.List;
-import sac.domain.Estado;
 import sac.domain.Produto;
 
 /**

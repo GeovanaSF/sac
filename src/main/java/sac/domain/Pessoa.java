@@ -17,16 +17,17 @@ public class Pessoa implements Serializable{
     private Integer pessoa_Id;
     private Integer endereco_Id;
     private Integer perfil_Id;
-    private Integer usuario_Id;
     private String nome;
     private String cpf;
     private String telefone;
+    private String email;
+    private String senha;
+    private String key;
 
-    public Pessoa(Integer pessoa_Id, Integer endereco_Id, Integer perfil_Id, Integer usuario_Id, String nome, String cpf, String telefone) {
+    public Pessoa(Integer pessoa_Id, Integer endereco_Id, Integer perfil_Id, String nome, String cpf, String telefone) {
         this.pessoa_Id = pessoa_Id;
         this.endereco_Id = endereco_Id;
         this.perfil_Id = perfil_Id;
-        this.usuario_Id = usuario_Id;
         this.nome = nome;
         this.cpf = cpf;
         this.telefone = telefone;
@@ -74,14 +75,6 @@ public class Pessoa implements Serializable{
         this.perfil_Id = perfil_Id;
     }
 
-    public Integer getUsuario_Id() {
-        return usuario_Id;
-    }
-
-    public void setUsuario_Id(Integer usuario_Id) {
-        this.usuario_Id = usuario_Id;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -105,4 +98,28 @@ public class Pessoa implements Serializable{
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }  
 }

@@ -27,4 +27,9 @@
     <link rel="stylesheet" type="text/css" href="jsp/plugins/toastr/toastr.min.css">
     <!-- daterange picker -->
     <!--  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">-->
+    <style>
+        .hidden{
+            display: none;
+        }
+    </style>
 </head>

@@ -28,7 +28,7 @@ public class ProdutoDAO implements DAO<Produto> {
 
     private static final String QUERY_REMOVE = "DELETE FROM Produto WHERE produto_id=?";
 
-    private static final String QUERY_GET = "SELECT produto_id, nome, descricao, peso, categoria_id FROM Produto";
+    private static final String QUERY_GET = "SELECT produto_id, p.nome, descricao, peso, p.categoria_id, c.nome as categoria FROM Produto p join categoria c on p.categoria_id = c.categoria_id ";
 
     private Connection conn;
 
@@ -48,7 +48,7 @@ public class ProdutoDAO implements DAO<Produto> {
         if (rs.next()) {
             return new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"),
                     rs.getString("nome"), rs.getString("descricao"),
-                    rs.getFloat("peso"));
+                    rs.getFloat("peso"), rs.getString("categoria"));
         }
 
         return null;
@@ -67,7 +67,7 @@ public class ProdutoDAO implements DAO<Produto> {
             if (rs.next()) {
                 return new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"),
                         rs.getString("nome"), rs.getString("descricao"),
-                        rs.getFloat("peso"));
+                        rs.getFloat("peso"), rs.getString("categoria"));
             }
         } catch (SQLException ex) {
         } catch (Exception ex) {
@@ -87,7 +87,7 @@ public class ProdutoDAO implements DAO<Produto> {
             rs = ps.executeQuery(QUERY_GET);
             lista = new ArrayList<>();
             while (rs.next()) {
-                lista.add(new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"), rs.getString("nome"), rs.getString("descricao"), rs.getFloat("peso")));
+                lista.add(new Produto(rs.getInt("produto_id"), rs.getInt("categoria_id"), rs.getString("nome"), rs.getString("descricao"), rs.getFloat("peso"), rs.getString("categoria")));
             }
         } catch (SQLException ex) {
         } catch (Exception ex) {
@@ -116,7 +116,7 @@ public class ProdutoDAO implements DAO<Produto> {
                 key = rs.getInt(1);
             }
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(ProdutoDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
 
         return key;
@@ -133,7 +133,7 @@ public class ProdutoDAO implements DAO<Produto> {
             stmt.setInt(5, obj.getProduto_id());
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(ProdutoDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
     }
 
@@ -144,7 +144,7 @@ public class ProdutoDAO implements DAO<Produto> {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(ProdutoDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
     }
 

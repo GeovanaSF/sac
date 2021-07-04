@@ -115,7 +115,6 @@
                         <div class="row">
                             <jsp:useBean id="consulta" class="sac.model.Consultas" scope="request"/>
 
-                            <sql:setDataSource var="conexao" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/db_sac" user="sac_user" password="sac_123" />
                             <!--CLIENTE: LISTA TODOS OS ATENDIMENTOS-->
                             <c:if test="${usuarioLogado.perfil_Id == 1}"> 
 
@@ -190,7 +189,7 @@
                                             <td>${item.situacaoAtendimento}</td>
                                             <td>
                                                 <c:if test="${item.situacaoAtendimento == 'Aberto'}">
-                                                    <a href="ResolucaoAtendimento?id=${item.atendimento_id}">
+                                                    <a href="Atendimento?id=${item.atendimento_id}">
                                                         <i style="margin:5%;" class="fas fa-clipboard-check" alt="Resolver" data-toggle="tooltip" data-placement="top" title="Resolver atendimento"></i>
                                                     </a> 
                                                 </c:if>

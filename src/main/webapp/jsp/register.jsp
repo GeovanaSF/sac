@@ -105,15 +105,15 @@
 
                             <select class="custom-select form-control-border" id="estado_id" name="estado_id" value="${pessoa.estado_id}" placeholder="Estado">
                                 <c:if test="${pessoa.estado_id == 0}">
-                                    <option selected="selected">Selecione o estado</option>    
+                                    <option selected="selected" value="">Selecione o estado</option>    
                                 </c:if>
                                 <c:if test="${pessoa.estado_id != 0}">
-                                    <option>Selecione</option>    
+                                    <option value="">Selecione o estado</option>    
                                 </c:if>
                                 <c:forEach var="estado" items="${estados.getEstados()}">
 
                                     <c:if test="${pessoa.estado_id == estado.estado_id}">
-                                        <option selected="selected">Selecione o estado</option>    
+                                        <option selected="selected" value="">Selecione o estado</option>    
                                     </c:if>
                                     <option value="${estado.estado_id}">${estado.nome}</option>
                                 </c:forEach>
@@ -121,7 +121,7 @@
                         </div>
                         <div class="input-group mb-1 col-6">
                             <select class="custom-select form-control-border" id="cidade_id" name="cidade_id" value="${pessoa.cidade_id}" placeholder="Cidade">
-                                <option selected="selected">Selecione a cidade</option>
+                                <option selected="selected" value="">Selecione a cidade</option>
                             </select>
                         </div>
 

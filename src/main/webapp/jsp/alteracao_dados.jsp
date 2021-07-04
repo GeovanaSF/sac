@@ -121,7 +121,6 @@
 
                             <input type="hidden" id="pessoa_id" name="pessoa_id" value="${pessoa.pessoa_id}">
                             <input type="hidden" id="endereco_id" name="endereco_id" value="${pessoa.endereco_id}">
-                            <input type="hidden" id="usuario_id" name="usuario_id" value="${pessoa.usuario_id}">
 
                             <div class="input-group mb-1 col-12">
                                 <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome completo" value="${pessoa.nome}">

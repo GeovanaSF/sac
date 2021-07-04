@@ -6,27 +6,17 @@
 package sac.controller;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sac.dao.AtendimentoDAO;
-import sac.dao.ConnectionFactory;
-import sac.dao.DAOException;
-import sac.domain.Usuario;
-import sac.model.Atendimentos;
-import sac.model.Consultas;
 
 /**
  *
  * @author geova
  */
-public class Dashboard extends HttpServlet {
+public class Relatorio extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,34 +28,20 @@ public class Dashboard extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, DAOException {
-
-        Connection connection = ConnectionFactory.getConnection();
-
-        AtendimentoDAO atDAO = new AtendimentoDAO(connection);
-        Consultas consulta = new Consultas();
-        Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
-        if (user == null) {
-            request.getSession().invalidate();
-            response.sendRedirect("/SAC_V1/Login");
-            return;
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet Relatorio</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet Relatorio at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        if (user.getPerfil_Id() == 1) {
-            //Carrega dados do cliente
-            List<Atendimentos> lista = atDAO.getListMeusAtendimentos(user.getUsuario_Id());
-            consulta.setAtendimentos(lista);
-        } else if (user.getPerfil_Id() == 2) {
-            //carrega dados do funcionario
-            List<Atendimentos> lista = atDAO.getListTodosAtendimentosAberto();
-            consulta.setAtendimentos(lista);
-        } else if (user.getPerfil_Id() == 3) {
-            //carrega dados do gerente
-        }
-        
-        request.setAttribute("consulta", consulta);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/dashboard.jsp");
-        dispatcher.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -80,11 +56,7 @@ public class Dashboard extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (DAOException ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -98,11 +70,7 @@ public class Dashboard extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (DAOException ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

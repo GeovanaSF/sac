@@ -91,7 +91,7 @@ private static final String QUERY_GET = "select tipoatendimento_id, nome from ti
                 key = rs.getInt(1);
             }
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(TipoAtendimentoDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
 
         return key;
@@ -105,7 +105,7 @@ private static final String QUERY_GET = "select tipoatendimento_id, nome from ti
             stmt.setInt(2, obj.getTipoAtendimento_id());
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(TipoAtendimentoDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
     }
 
@@ -116,7 +116,7 @@ private static final String QUERY_GET = "select tipoatendimento_id, nome from ti
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(TipoAtendimentoDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
     }
     

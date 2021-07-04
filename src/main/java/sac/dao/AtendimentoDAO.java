@@ -35,10 +35,8 @@ public class AtendimentoDAO implements DAO<Atendimento> {
             + "case when a.situacao=1 then 'Aberto'"
             + " when a.situacao=2 then 'Finalizado' end as situacao\n"
             + " from atendimento a\n"
-            + "join usuario c on a.cliente_id=c.usuario_id\n"
-            + "join pessoa pc on c.usuario_id = pc.usuario_id\n"
-            + "left join usuario f on a.funcionario_id=f.usuario_id\n"
-            + "left join pessoa pf on f.usuario_id=pf.usuario_id\n"
+            + "join pessoa pc on a.cliente_id = pc.pessoa_id\n"
+            + "left join pessoa pf on a.funcionario_id=pf.pessoa_id\n"
             + "join produto p on a.produto_id = p.produto_id\n"
             + "join tipoatendimento ta on a.tipoatendimento_id=ta.tipoatendimento_id";
 
@@ -152,7 +150,7 @@ public class AtendimentoDAO implements DAO<Atendimento> {
             Statement ps = null;
             ResultSet rs = null;
             ps = conn.createStatement();
-            rs = ps.executeQuery(QUERY_GETALL + " where c.usuario_id=" + usuario_id + " order by a.dataCriacao");
+            rs = ps.executeQuery(QUERY_GETALL + " where pc.pessoa_id=" + usuario_id + " order by a.dataCriacao");
             lista = new ArrayList<>();
             while (rs.next()) {
                 lista.add(new Atendimentos(rs.getInt("id"), rs.getString("cliente"),

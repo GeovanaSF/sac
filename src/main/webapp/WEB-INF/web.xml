@@ -7,12 +7,6 @@
     </filter>
     <filter-mapping>
         <filter-name>UsuarioLogado</filter-name>
-        <servlet-name>Cidade</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>UsuarioLogado</filter-name>
         <servlet-name>Novo_</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
@@ -87,6 +81,10 @@
         <servlet-name>Novo_</servlet-name>
         <servlet-class>sac.controller.Novo_</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Relatorio</servlet-name>
+        <servlet-class>sac.controller.Relatorio</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -135,6 +133,10 @@
         <url-pattern>/Novo_Categoria</url-pattern>
         <url-pattern>/Novo_Produto</url-pattern>
         <url-pattern>/Novo_Funcionario</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Relatorio</servlet-name>
+        <url-pattern>/Relatorio</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

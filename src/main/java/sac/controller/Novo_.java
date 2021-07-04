@@ -24,7 +24,6 @@ import sac.dao.EnderecoDAO;
 import sac.dao.EstadoDAO;
 import sac.dao.PessoaDAO;
 import sac.dao.ProdutoDAO;
-import sac.dao.UsuarioDAO;
 import sac.domain.Categoria;
 import sac.domain.Endereco;
 import sac.domain.Estado;
@@ -110,7 +109,7 @@ public class Novo_ extends HttpServlet {
                 if (action.equals("/Novo_Produto") || produto_id > 0) {
                     try {
                         ProdutoDAO daoProduto = new ProdutoDAO(connection);
-                        Produto produto = new Produto(produto_id, categoria_id, nome, descricao, peso);
+                        Produto produto = new Produto(produto_id, categoria_id, nome, descricao, peso, "");
                         if (produto_id == 0) {
                             produto.setProduto_id(daoProduto.insert(produto));
                         } else {
@@ -145,31 +144,25 @@ public class Novo_ extends HttpServlet {
                 String perfil = request.getParameter("perfil_id");
                 String endereco_ = request.getParameter("endereco_id");
                 String id_pessoa = request.getParameter("pessoa_id");
-                String usuario = request.getParameter("usuario_id");
 
                 Integer cidade = 0;
-                if (!cidade_id.isEmpty()) {
+                if (cidade_id != null && !cidade_id.isEmpty()) {
                     cidade = Integer.parseInt(cidade_id);
                 }
 
                 Integer perfil_id = 0;
-                if (!perfil.isEmpty()) {
+                if (perfil != null && !perfil.isEmpty()) {
                     perfil_id = Integer.parseInt(perfil);
                 }
 
                 Integer endereco_id = 0;
-                if (!endereco_.isEmpty()) {
+                if (endereco_ != null && !endereco_.isEmpty()) {
                     endereco_id = Integer.parseInt(endereco_);
                 }
 
                 Integer pessoa_id = 0;
-                if (!id_pessoa.isEmpty()) {
+                if (id_pessoa != null && !id_pessoa.isEmpty()) {
                     pessoa_id = Integer.parseInt(id_pessoa);
-                }
-
-                Integer usuario_id = 0;
-                if (!usuario.isEmpty()) {
-                    usuario_id = Integer.parseInt(usuario);
                 }
 
                 String email = request.getParameter("email");
@@ -216,13 +209,13 @@ public class Novo_ extends HttpServlet {
                 if (password_conf == null || password_conf.isEmpty()) {
                     erros.add("'Senha não informada!'");
                 }
-                if (!password.equals(password_conf)) {
+                if (password != null && !password.isEmpty() && password_conf != null && !password_conf.isEmpty() && !password.equals(password_conf)) {
                     erros.add("'Confirmação de senha inválida'");
                 }
 
-                UsuarioDAO daoUser = new UsuarioDAO(connection);
-                Usuario user = daoUser.getSingle(email);
-                if (user != null && usuario_id == 0) {
+                PessoaDAO pessoaDAO = new PessoaDAO(connection);
+                Usuario user = pessoaDAO.getUserByEmail(email);
+                if (user != null && pessoa_id == 0) {
                     erros.add("'E-mail já cadastrado'");
                 }
 
@@ -230,17 +223,20 @@ public class Novo_ extends HttpServlet {
                     Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), perfil_id);
 
                     if (user != null) {
-                        pessoa.setUsuario_Id(user.getUsuario_Id());
-                    } else {
+                        pessoa.setPessoa_Id(user.getUsuario_Id());
+                    }
+                    if (password != null && !password.isEmpty() && password_conf != null && !password_conf.isEmpty()) {
                         // Generate Salt. The generated value can be stored in DB. 
                         String salt = Password.getSalt(30);
                         // Protect user's password. The generated value can be stored in DB.
                         String mySecurePassword = Password.generateSecurePassword(password, salt);
+                        pessoa.setEmail(email);
+                        pessoa.setSenha(mySecurePassword);
+                        pessoa.setKey(salt);
 
-                        user = new Usuario(email, mySecurePassword);
-                        
-                        user.setPerfil_Id(perfil_id);
-                        pessoa.setUsuario_Id(daoUser.insert(user));
+                        if (pessoa_id != 0) {
+                            pessoaDAO.updateSenha(pessoa);
+                        }
                     }
 
                     EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
@@ -253,12 +249,12 @@ public class Novo_ extends HttpServlet {
 
                     pessoa.setEndereco_Id(endereco_id);
 
-                    PessoaDAO pessoaDAO = new PessoaDAO(connection);
                     if (pessoa_id == 0) {
                         pessoa_id = pessoaDAO.insert(pessoa);
                     } else {
                         pessoa.setPessoa_Id(pessoa_id);
                         pessoaDAO.update(pessoa);
+
                     }
 
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/Funcionario");
@@ -266,7 +262,6 @@ public class Novo_ extends HttpServlet {
                 } else {
                     p.setPessoa_id(pessoa_id);
                     p.setEndereco_id(endereco_);
-                    p.setUsuario_id(usuario_id);
                     p.setBairro(bairro);
                     p.setCep(cep);
                     p.setComplemento(complemento);
@@ -275,6 +270,9 @@ public class Novo_ extends HttpServlet {
                     p.setNumero(numero);
                     p.setRua(rua);
                     p.setTelefone(telefone);
+                    p.setPerfil_Id(perfil_id);
+                    p.setCpf(cpf);
+                    p.setSenha("");
                     if (!estado.isEmpty()) {
                         p.setEstado_id(Integer.parseInt(estado));
                     }
@@ -317,6 +315,7 @@ public class Novo_ extends HttpServlet {
 
         request.setAttribute("mensagens", erros);
         request.setAttribute("cadastro", cadastro);
+        request.setAttribute("pessoa", p);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);

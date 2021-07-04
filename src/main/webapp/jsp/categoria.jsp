@@ -118,6 +118,7 @@
                 <div class="content">
                     <div class="container">
                         <div class="row">
+                            <jsp:useBean id="novo" class="sac.model.Novo" scope="request"/>
                             <sql:setDataSource var="conexao" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/db_sac" user="sac_user" password="sac_123" />
                             <!--CLIENTE: LISTA TODOS OS ATENDIMENTOS-->
 
@@ -134,7 +135,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="item" items="${consulta.rows}">
+                                    <c:forEach var="item" items="${novo.getCategorias()}">
                                         <tr>
                                             <td>${item.categoria_id}</td>
                                             <td>${item.nome}</td>
@@ -147,7 +148,7 @@
                                             </td>       
                                         </tr>
                                     </c:forEach>
-                                    <c:if test="${fn: length(consulta.rows)==0}">
+                                    <c:if test="${novo.getCategorias().size()==0}">
                                         <tr>
                                             <td colspan="3" style="text-align: center;">Nenhum item encontrado</td>
                                         </tr>

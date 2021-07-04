@@ -108,7 +108,7 @@ public class CategoriaDAO implements DAO<Categoria> {
                 key = rs.getInt(1);
             }
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(CategoriaDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
 
         return key;
@@ -122,7 +122,7 @@ public class CategoriaDAO implements DAO<Categoria> {
             stmt.setInt(2, obj.getCategoria_id());
             stmt.executeUpdate();
         } catch (SQLException sQLException) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, sQLException);
+            Logger.getLogger(CategoriaDAO.class.getName()).log(Level.SEVERE, null, sQLException);
         }
 
     }

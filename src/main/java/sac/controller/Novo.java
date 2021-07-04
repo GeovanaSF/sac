@@ -25,7 +25,6 @@ import sac.dao.PessoaDAO;
 import sac.dao.ProdutoDAO;
 import sac.domain.Categoria;
 import sac.domain.Estado;
-import sac.domain.Pessoa;
 import sac.domain.Produto;
 import sac.model.Categorias;
 import sac.model.Estados;
@@ -53,6 +52,8 @@ public class Novo extends HttpServlet {
         Erro erros = new Erro();
         sac.model.Cadastro cadastro = new sac.model.Cadastro();
         sac.model.Pessoa p = new sac.model.Pessoa();
+        sac.model.Novo novo = new sac.model.Novo();
+
         String url = "";
 
         Connection connection = ConnectionFactory.getConnection();
@@ -62,6 +63,14 @@ public class Novo extends HttpServlet {
                 String _id = request.getParameter("id");
                 if (_id == null || _id.isEmpty()) {
                     url = "/jsp/categoria.jsp";
+
+                    try {
+                        CategoriaDAO catDAO = new CategoriaDAO(connection);
+                        List<Categoria> categorias = catDAO.getList();
+                        novo.setCategorias(categorias);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else {
                     int id = Integer.parseInt(_id);
                     if (id > 0) {
@@ -85,7 +94,16 @@ public class Novo extends HttpServlet {
             } else if (action.equals("/Produto")) {
                 String _id = request.getParameter("id");
                 if (_id == null || _id.isEmpty()) {
+
                     url = "/jsp/produto.jsp";
+
+                    try {
+                        ProdutoDAO prodDAO = new ProdutoDAO(connection);
+                        List<Produto> produtos = prodDAO.getList();
+                        novo.setProdutos(produtos);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else {
                     int id = Integer.parseInt(_id);
                     if (id > 0) {
@@ -119,6 +137,13 @@ public class Novo extends HttpServlet {
                 String _id = request.getParameter("id");
                 if (_id == null || _id.isEmpty()) {
                     url = "/jsp/funcionario.jsp";
+                    try {
+                        PessoaDAO pessoaDAO = new PessoaDAO(connection);
+                        List<sac.model.Pessoa> funcionarios = pessoaDAO.getPessoaByPerfilId(2);
+                        novo.setFuncionarios(funcionarios);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else {
                     int id = Integer.parseInt(_id);
                     if (id > 0) {
@@ -126,15 +151,16 @@ public class Novo extends HttpServlet {
                         try {
                             PessoaDAO pessoaDAO = new PessoaDAO(connection);
                             p = pessoaDAO.getPessoaById(id);
-                            if (p != null) {                                
+                            if (p != null) {
+                                p.setSenha("");
+
                                 url = "/jsp/novo_funcionario.jsp";
 
                                 EstadoDAO estadoDAO = new EstadoDAO(connection);
                                 List<Estado> estados = estadoDAO.getList(1);
                                 Estados e = new Estados(estados);
                                 request.setAttribute("estados", e);
-                                
-                                
+
                                 CidadeDAO cidadeDAO = new CidadeDAO(connection);
                                 List<sac.domain.Cidade> cidades = cidadeDAO.getList(p.getEstado_id().toString());
                                 e.setCidades(cidades);
@@ -152,6 +178,7 @@ public class Novo extends HttpServlet {
         request.setAttribute("mensagens", erros);
         request.setAttribute("cadastro", cadastro);
         request.setAttribute("pessoa", p);
+        request.setAttribute("novo", novo);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);

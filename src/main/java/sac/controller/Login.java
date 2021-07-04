@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import sac.dao.ConnectionFactory;
 import sac.dao.DAOException;
-import sac.dao.UsuarioDAO;
+import sac.dao.PessoaDAO;
 import sac.domain.Usuario;
 import sac.util.Erro;
 import sac.util.Password;
@@ -52,8 +52,8 @@ public class Login extends HttpServlet {
             }
             if (!erros.isExisteErros()) {
                 Connection connection = ConnectionFactory.getConnection();
-                UsuarioDAO dao = new UsuarioDAO(connection);
-                Usuario user = dao.getSingle(email);
+                PessoaDAO dao = new PessoaDAO(connection);
+                Usuario user = dao.getUserByEmail(email);
                 if (user != null) {
                     boolean passwordMatch = Password.verifyUserPassword(password, user.getSenha(), user.getKey());
 

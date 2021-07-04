@@ -129,7 +129,7 @@
 
                                 <jsp:useBean id="produtos" class="sac.model.Produtos" scope="request"/>
 
-                                <select class="custom-select form-control-border" id="produto_id" name="produto_id" value="${atendimento.produto_id}" placeholder="Selecione o produto" ${usuarioLogado.perfil_Id != 1 ? "readonly" : ""}>
+                                <select class="custom-select form-control-border" id="produto_id" name="produto_id" value="${atendimento.produto_id}" placeholder="Selecione o produto" ${usuarioLogado.perfil_Id != 1 || atendimento.situacao == 2? "disabled" : ""}>
                                     <c:if test="${atendimento.produto_id == 0}">
                                         <option selected="selected">Selecione o produto</option>    
                                     </c:if>
@@ -137,15 +137,15 @@
                                         <option>Selecione o produto</option>    
                                     </c:if>
                                     <c:forEach var="produto" items="${produtos.getProdutos()}">
-                                            <option ${atendimento.produto_id == produto.produto_id ? "selected" : ""} value="${produto.produto_id}">${produto.nome}</option>
+                                        <option ${atendimento.produto_id == produto.produto_id ? "selected" : ""} value="${produto.produto_id}">${produto.nome}</option>
                                     </c:forEach>
                                 </select>
                             </div>
-                                    
+
                             <div class="input-group mb-1 col-6">
                                 <jsp:useBean id="tipoatendimentos" class="sac.model.TipoAtendimentos" scope="request"/>
 
-                                <select class="custom-select form-control-border" id="tipoatendimento_id" name="tipoatendimento_id" value="${atendimento.tipoatendimento_id}" placeholder="Tipo de atendimento" ${usuarioLogado.perfil_Id != 1 ? "readonly" : ""}>
+                                <select class="custom-select form-control-border" id="tipoatendimento_id" name="tipoatendimento_id" value="${atendimento.tipoatendimento_id}" placeholder="Tipo de atendimento" ${usuarioLogado.perfil_Id != 1 || atendimento.situacao == 2? "disabled" : ""}>
                                     <c:if test="${atendimento.tipoatendimento_id == 0}">
                                         <option selected="selected">Selecione o tipo de atendimento</option>    
                                     </c:if>
@@ -159,15 +159,15 @@
                             </div>
 
                             <div class="input-group mb-1 col-12">
-                                <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" ${usuarioLogado.perfil_Id != 1 ? "readonly" : ""}>${atendimento.descricao}</textarea>
+                                <textarea class="form-control" rows="2" style="resize: none;" id="descricao" name="descricao" placeholder="Descrição" ${usuarioLogado.perfil_Id != 1 || atendimento.situacao == 2? "readonly" : ""}>${atendimento.descricao}</textarea>
                             </div>
-                                   
+
                             <div class="input-group mb-1 col-12">
-                                <textarea class="form-control" rows="2" style="resize: none;" id="solucao" name="solucao" placeholder="Solucao" ${usuarioLogado.perfil_Id != 2 ? "readonly" : ""}>${atendimento.solucao}</textarea>
+                                <textarea class="form-control" rows="2" style="resize: none;" id="solucao" name="solucao" placeholder="Solucao" ${usuarioLogado.perfil_Id != 2 || atendimento.situacao == 2 ? "readonly" : ""}>${atendimento.solucao}</textarea>
                             </div>
-                            
+
                             <div class="col-10"></div>
-                            <div class="col-2">
+                            <div class="col-2 ${atendimento.situacao == 2 ? "hidden" : ""}">
                                 <button type="submit" name="bSalvar" value="salvar" class="btn btn-primary btn-block">Salvar</button>
                             </div>
                         </form>

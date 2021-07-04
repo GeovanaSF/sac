@@ -23,13 +23,13 @@ import sac.dao.DAOException;
 import sac.dao.EnderecoDAO;
 import sac.dao.EstadoDAO;
 import sac.dao.PessoaDAO;
-import sac.dao.UsuarioDAO;
 import sac.domain.Endereco;
 import sac.domain.Estado;
 import sac.domain.Pessoa;
 import sac.domain.Usuario;
 import sac.model.Estados;
 import sac.util.Erro;
+import sac.util.Password;
 
 /**
  *
@@ -125,22 +125,33 @@ public class AlterarDados extends HttpServlet {
 //                if (email == null || email.isEmpty()) {
 //                    erros.add("'E-mail não informado!'");
 //                }
-                if (password == null || password.isEmpty()) {
-                    erros.add("'Senha não informada!'");
-                }
-                if (password_conf == null || password_conf.isEmpty()) {
-                    erros.add("'Confirmação de senha não informada!'");
-                }
-                if (!(password == null || password.isEmpty()) && !(password_conf == null || password_conf.isEmpty()) && !password.equals(password_conf)) {
+//                if (password == null || password.isEmpty()) {
+//                    erros.add("'Senha não informada!'");
+//                }
+//                if (password_conf == null || password_conf.isEmpty()) {
+//                    erros.add("'Confirmação de senha não informada!'");
+//                }
+
+                if (password != null && !password.isEmpty() && password_conf != null && !password_conf.isEmpty() && !password.equals(password_conf)) {
                     erros.add("'Confirmação de senha inválida'");
                 }
 
                 if (!erros.isExisteErros()) {
+                    PessoaDAO pessoaDAO = new PessoaDAO(connection);
                     Pessoa pessoa = new Pessoa(pessoa_id, nome, telefone.replaceAll("[^0-9?!\\.]", ""));
 
-                    if (user != null) {
-                        pessoa.setUsuario_Id(user.getUsuario_Id());
+                    if (password != null && !password.isEmpty() && password_conf != null && !password_conf.isEmpty()) {
                         //TODO: PRECISA FAZER O UPDATE DA SENHA
+                        // Generate Salt. The generated value can be stored in DB. 
+                        String salt = Password.getSalt(30);
+                        // Protect user's password. The generated value can be stored in DB.
+                        String mySecurePassword = Password.generateSecurePassword(password, salt);
+
+                        pessoa.setEmail(email);
+                        pessoa.setSenha(mySecurePassword);
+                        pessoa.setKey(salt);
+
+                        pessoaDAO.updateSenha(pessoa);
                     }
 
                     EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
@@ -153,7 +164,6 @@ public class AlterarDados extends HttpServlet {
 
                     pessoa.setEndereco_Id(endereco_id);
 
-                    PessoaDAO pessoaDAO = new PessoaDAO(connection);
                     if (pessoa_id == 0) {
                         pessoa_id = pessoaDAO.insert(pessoa);
                     } else {
@@ -164,7 +174,6 @@ public class AlterarDados extends HttpServlet {
                 } else {
                     p.setPessoa_id(pessoa_id);
                     p.setEndereco_id(endereco_);
-                    p.setUsuario_id(user.getUsuario_Id());
                     p.setBairro(bairro);
                     p.setCep(cep);
                     p.setComplemento(complemento);
@@ -188,6 +197,8 @@ public class AlterarDados extends HttpServlet {
             PessoaDAO pessoaDAO = new PessoaDAO(connection);
             p = pessoaDAO.getPessoaByUserId(user.getUsuario_Id());
             if (p != null) {
+                p.setSenha("");
+
                 EstadoDAO estadoDAO = new EstadoDAO(connection);
                 List<Estado> estados = estadoDAO.getList(1);
                 Estados e = new Estados(estados);
@@ -198,7 +209,7 @@ public class AlterarDados extends HttpServlet {
                 e.setCidades(cidades);
             }
         } catch (SQLException ex) {
-
+            Logger.getLogger(AlterarDados.class.getName()).log(Level.SEVERE, null, ex);
         }
         request.setAttribute("mensagens", erros);
         request.setAttribute("cadastro", cadastro);

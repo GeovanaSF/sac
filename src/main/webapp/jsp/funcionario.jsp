@@ -119,16 +119,9 @@
                 <div class="content">
                     <div class="container">
                         <div class="row">
-                            <sql:setDataSource var="conexao" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/db_sac" user="sac_user" password="sac_123" />
+                            <jsp:useBean id="novo" class="sac.model.Novo" scope="request"/>
                             <!--GERENTE: LISTA TODOS OS FUNCIONARIOS-->
 
-                            <sql:query dataSource="${conexao}" var="consulta">
-                                select p.pessoa_id as id, p.nome as nome, p.cpf as cpf, p.telefone as telefone, u.email as email, pf.nome as perfil , p.usuario_id as usuario_id
-                                from pessoa p
-                                join usuario u on p.usuario_id = u.usuario_id
-                                join perfil pf on p.perfil_id = pf.perfil_id
-                                where u.perfil_id <> 1
-                            </sql:query>
 
                             <table class="table table-striped col-12">
                                 <thead>
@@ -141,25 +134,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="item" items="${consulta.rows}">
+                                    <c:forEach var="item" items="${novo.getFuncionarios()}">
                                         <tr>
-                                            <td>${item.id}</td>
+                                            <td>${item.pessoa_id}</td>
                                             <td>${item.nome}</td>
                                             <td>${item.email}</td>
                                             <td>${item.perfil}</td>
                                             <td>
-                                                <a  href="Funcionario?id=${item.id}">
+                                                <a  href="Funcionario?id=${item.pessoa_id}">
                                                     <i style="margin:5%;" class="fas fa-edit" alt="Editar" data-toggle="tooltip" data-placement="top" title="Editar funcionário"></i>
                                                 </a> 
 
-                                                <c:if test="${item.usuario_id != usuarioLogado.usuario_Id}">
-                                                    <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.id})" data-toggle="tooltip" data-placement="top" title="Excluir funcionário"></i>
+                                                <c:if test="${item.pessoa_id != usuarioLogado.usuario_Id}">
+                                                    <i style="cursor:pointer;" class="fas fa-trash-alt" alt="Excluir" onclick="excluir(${item.pessoa_id})" data-toggle="tooltip" data-placement="top" title="Excluir funcionário"></i>
                                                 </c:if>
 
                                             </td>
                                         </tr>
                                     </c:forEach>
-                                    <c:if test="${fn: length(consulta.rows)==0}">
+                                    <c:if test="${novo.getFuncionarios().size()==0}">
                                         <tr>
                                             <td colspan="5" style="text-align: center;">Nenhum item encontrado</td>
                                         </tr>

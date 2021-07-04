@@ -154,7 +154,7 @@
                                                         </a> 
                                                     </c:if>
                                                     <c:if test="${item.situacaoAtendimento == 'Aberto' && usuarioLogado.perfil_Id==2}">
-                                                        <a href="ResolucaoAtendimento?id=${item.atendimento_id}">
+                                                        <a href="Atendimento?id=${item.atendimento_id}">
                                                             <i style="margin:5%;" class="fas fa-clipboard-check" alt="Resolver" data-toggle="tooltip" data-placement="top" title="Resolver atendimento"></i>
                                                         </a> 
                                                     </c:if>

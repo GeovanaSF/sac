@@ -21,7 +21,6 @@ import sac.dao.DAOException;
 import sac.dao.EnderecoDAO;
 import sac.dao.EstadoDAO;
 import sac.dao.PessoaDAO;
-import sac.dao.UsuarioDAO;
 import sac.domain.Endereco;
 import sac.domain.Estado;
 import sac.domain.Pessoa;
@@ -82,7 +81,7 @@ public class Registrar extends HttpServlet {
             if (password_conf == null || password_conf.isEmpty()) {
                 erros.add("'Senha não informada!'");
             }
-            if (!password.equals(password_conf)) {
+            if (password != null && !password.isEmpty() && password_conf != null && !password_conf.isEmpty() && !password.equals(password_conf)) {
                 erros.add("'Confirmação de senha inválida'");
             }
             if (nome == null || nome.isEmpty()) {
@@ -113,8 +112,8 @@ public class Registrar extends HttpServlet {
                 erros.add("'Selecione uma cidade!'");
             }
 
-            UsuarioDAO daoUser = new UsuarioDAO(connection);
-            Usuario user = daoUser.getSingle(email);
+            PessoaDAO pessoaDAO = new PessoaDAO(connection);
+            Usuario user = pessoaDAO.getUserByEmail(email);
             if (user != null) {
                 erros.add("'E-mail já cadastrado'");
             }
@@ -123,25 +122,26 @@ public class Registrar extends HttpServlet {
                 Pessoa pessoa = new Pessoa(nome, cpf.replaceAll("[^0-9]", ""), telefone.replaceAll("[^0-9?!\\.]", ""), 1);
 
                 if (user != null) {
-                    pessoa.setUsuario_Id(user.getUsuario_Id());
-                } else {
-                    // Generate Salt. The generated value can be stored in DB. 
-                    String salt = Password.getSalt(30);
-                    // Protect user's password. The generated value can be stored in DB.
-                    String mySecurePassword = Password.generateSecurePassword(password, salt);
-
-                    user = new Usuario(email, mySecurePassword);
-                    user.setPerfil_Id(1);
-                    user.setKey(salt);
-
-                    pessoa.setUsuario_Id(daoUser.insert(user));
+                    pessoa.setPessoa_Id(user.getUsuario_Id());
                 }
+
+                // Generate Salt. The generated value can be stored in DB. 
+                String salt = Password.getSalt(30);
+                // Protect user's password. The generated value can be stored in DB.
+                String mySecurePassword = Password.generateSecurePassword(password, salt);
+
+//                user = new Usuario(email, mySecurePassword);
+//                user.setPerfil_Id(1);
+//                user.setKey(salt);
+
+                pessoa.setEmail(email);
+                pessoa.setSenha(mySecurePassword);
+                pessoa.setKey(salt);
 
                 EnderecoDAO enderecoDAO = new EnderecoDAO(connection);
                 Endereco endereco = new Endereco(0, cidade_id, rua, numero, complemento, bairro, cep);
                 pessoa.setEndereco_Id(enderecoDAO.insert(endereco));
 
-                PessoaDAO pessoaDAO = new PessoaDAO(connection);
                 int id = pessoaDAO.insert(pessoa);
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/Login");
@@ -156,6 +156,8 @@ public class Registrar extends HttpServlet {
                 p.setNumero(numero);
                 p.setRua(rua);
                 p.setTelefone(telefone);
+                p.setCpf(cpf);
+                
                 if (!estado.isEmpty()) {
                     p.setEstado_id(Integer.parseInt(estado));
                 }

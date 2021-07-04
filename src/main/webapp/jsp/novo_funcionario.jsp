@@ -126,7 +126,6 @@
 
                             <input type="hidden" id="pessoa_id" name="pessoa_id" value="${pessoa.pessoa_id}">
                             <input type="hidden" id="endereco_id" name="endereco_id" value="${pessoa.endereco_id}">
-                            <input type="hidden" id="usuario_id" name="usuario_id" value="${pessoa.usuario_id}">
 
                             <div class="input-group mb-1 col-12">
                                 <div class="custom-control custom-radio col-2">
@@ -211,10 +210,10 @@
 
                                 <select class="custom-select form-control-border" id="estado_id" name="estado_id" value="${pessoa.estado_id}" placeholder="Estado">
                                     <c:if test="${pessoa.estado_id == 0}">
-                                        <option selected="selected">Selecione o estado</option>    
+                                        <option selected="selected" value="">Selecione o estado</option>    
                                     </c:if>
                                     <c:if test="${pessoa.estado_id != 0}">
-                                        <option>Selecione o estado</option>    
+                                        <option value="">Selecione o estado</option>    
                                     </c:if>
                                     <c:forEach var="estado" items="${estados.getEstados()}">
                                         <option ${pessoa.estado_id == estado.estado_id ? "selected" : ""} value="${estado.estado_id}">${estado.nome}</option>
@@ -225,10 +224,10 @@
                             <div class="input-group mb-1 col-6">
                                 <select class="custom-select form-control-border" id="cidade_id" name="cidade_id" value="${pessoa.cidade_id}" placeholder="Cidade">
                                     <c:if test="${estados.getCidades().size() == 0}">
-                                        <option selected="selected">Selecione a cidade</option>    
+                                        <option selected="selected" value="">Selecione a cidade</option>    
                                     </c:if>
                                     <c:if test="${pessoa.cidade_id != 0}">
-                                        <option>Selecione a cidade</option>    
+                                        <option value="">Selecione a cidade</option>    
                                     </c:if>
                                     <c:forEach var="cidade" items="${estados.getCidades()}">
                                         <option ${pessoa.cidade_id == cidade.cidade_id ? "selected" : ""} value="${cidade.cidade_id}">${cidade.nome}</option>
@@ -277,6 +276,7 @@
 
 
         <jsp:include page="footer_scripts.jsp" />
+        
         <script type="text/javascript">
             $(function () {
                 $('[data-mask]').inputmask();

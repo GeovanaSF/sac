@@ -7,19 +7,14 @@ package sac.controller;
 
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import sac.dao.AtendimentoDAO;
 import sac.dao.CategoriaDAO;
-import sac.dao.CidadeDAO;
 import sac.dao.ConnectionFactory;
 import sac.dao.DAOException;
 import sac.dao.PessoaDAO;
@@ -76,9 +71,7 @@ public class Excluir extends HttpServlet {
                 retorno.setSucesso(true);
             }
 
-        } catch (DAOException ex) {
-            retorno.setSucesso(false);
-        } catch (SQLException ex) {
+        } catch (DAOException | SQLException ex) {
             retorno.setSucesso(false);
         }
         String json = new Gson().toJson(retorno);

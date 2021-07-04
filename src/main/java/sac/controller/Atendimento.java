@@ -68,11 +68,11 @@ public class Atendimento extends HttpServlet {
                 String solucao = request.getParameter("solucao");
 
                 Integer produto_id = 0;
-                if (!produto.isEmpty()) {
+                if (produto!= null && !produto.isEmpty()) {
                     produto_id = Integer.parseInt(produto);
                 }
                 Integer tipoatendimento_id = 0;
-                if (!tipoatendimento.isEmpty()) {
+                if (tipoatendimento!= null && !tipoatendimento.isEmpty()) {
                     tipoatendimento_id = Integer.parseInt(tipoatendimento);
                 }
                 Integer atendimento_id = 0;
@@ -83,10 +83,10 @@ public class Atendimento extends HttpServlet {
                 if (descricao == null || descricao.isEmpty()) {
                     erros.add("'Preencha o campo descricao!'");
                 }
-                if (produto_id == 0) {
+                if (produto_id == 0 && user.getPerfil_Id() == 1) {
                     erros.add("'Selecione um produto!'");
                 }
-                if (tipoatendimento_id == 0) {
+                if (tipoatendimento_id == 0 && user.getPerfil_Id() == 1) {
                     erros.add("'Selecione um tipo de atendimento!'");
                 }
                 if (user.getPerfil_Id() == 2 && (solucao == null || solucao.isEmpty())) {
@@ -100,6 +100,8 @@ public class Atendimento extends HttpServlet {
                     atendimento.setDescricao(descricao);
                     atendimento.setTipoatendimento_id(tipoatendimento_id);
                     atendimento.setAtendimento_id(atendimento_id);
+                    atendimento.setSolucao(solucao);
+                    
                     if (user.getPerfil_Id() == 2) {
                         atendimento.setFuncionario_id(user.getUsuario_Id());
                         atendimento.setSituacao(2);
