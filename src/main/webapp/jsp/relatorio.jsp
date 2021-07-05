@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -12,7 +13,9 @@
 <html lang="en">
     <head>        
         <jsp:include page="header.jsp" />
-        <title>SAC - Dashboard</title>
+        <!-- daterange picker -->
+        <link rel="stylesheet" type="text/css" href="jsp/plugins/daterangepicker/daterangepicker.css">
+        <title>SAC - Relatórios</title>
     </head>
     <body class="hold-transition layout-top-nav">
 
@@ -119,33 +122,57 @@
                         <p ${mensagem.isEmpty() ? "class='hidden'":""}>${mensagem}</p>
 
                         <c:if test="${tipo == 1}"> 
+                            <div class="col-sm-6">
+                                <h5> Relatório de atendimentos abertos por período</h5>
+                            </div>
                             <form class="" action="GerarRelatorioAtendimento" method="post">
                                 <div class="row">
+                                    <!--                                    <div class="input-group mb-1 col-5">
+                                                                            <div class="input-group date" id="datetimeinicio" data-target-input="nearest">
+                                                                                <input type="text" class="form-control datetimepicker-input" data-target="#datetimeinicio" id="dataInicio" name="dataInicio" placeholder="Data de início"/>
+                                                                                <div class="input-group-append" data-target="#datetimeinicio" data-toggle="datetimepicker">
+                                                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="input-group mb-1 col-5">
+                                                                            <div class="input-group date" id="datetimefim" data-target-input="nearest" readonly="">
+                                                                                <input type="text" class="form-control datetimepicker-input" data-target="#datetimefim" id="dataFim" name="dataFim" placeholder="Data fim"/>
+                                                                                <div class="input-group-append" data-target="#datetimefim" data-toggle="datetimepicker">
+                                                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>-->
                                     <div class="input-group mb-1 col-5">
-                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" readonly="readonly" name="dataInicio"/>
-                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-clock"></i></span>
                                         </div>
-                                    </div>
-                                    <div class="input-group mb-1 col-5">
-                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" readonly="readonly" name="dataFim"/>
-                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
+                                        <input type="text" class="form-control float-right" id="reservationtime" name="dates" readonly="">
                                     </div>
                                     <div class="col-2">
-                                        <button type="submit" name="bRegistrar" value="registrar" class="btn btn-primary btn-block">Salvar</button>
+                                        <button type="submit" name="bRegistrar" value="registrar" class="btn btn-primary btn-block">Gerar</button>
                                     </div>
                                 </div>
                             </form>
                         </c:if>
 
-                        <c:if test="${tipo == 2}"> 
-                        </c:if>?
+                        <c:if test="${tipo == 2}"> <div class="col-sm-6">
+                                <h5> Relatório de reclamações filtrado por situação</h5>
+                            </div>
+                            <form class="class" action="GerarRelatorioReclamacao" method="post">
+                                <div class="input-group mb-1 col-6">
+                                    <select class="custom-select form-control-border" id="situacao" name="situacao" placeholder="Tipo de sitação">
+                                        <option selected="selected" value="0">Selecione a situação</option>    
+                                        <option value="1">Abertos</option>    
+                                        <option value="2">Finalizados</option>    
+                                        <option value="3">Todos</option>  
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="submit" name="bRegistrar" value="registrar" class="btn btn-primary btn-block">Gerar</button>
+                                </div>
+                            </form>
+                        </c:if>
                     </div>
                     <!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -160,18 +187,48 @@
 
     <jsp:include page="footer_scripts.jsp" />
 
+    <!-- date-range-picker -->
+    <script src="jsp/plugins/daterangepicker/daterangepicker.js"></script>
+
     <script type="text/javascript">
         $(function () {
             $('[data-mask]').inputmask();
 //                $(".ignore-click").click(function () {
 //                    return false;
 //                });
+        <%
+            Erro mensagens = (Erro) request.getAttribute("mensagens");
+        %>
+            var existe = ${mensagens.isExisteErros()};
+            var mensagens = ${mensagens.getErros()};
+            if (existe && mensagens.length > 0)
+            {
+                $.each(mensagens, function (i, el) {
+                    toastr.error(el)
+                })
+            }
 
             //Date and time picker
-            $('#reservationdatetime').datetimepicker({
-                icons: {time: 'far fa-clock'},
-                ignoreReadonly: false
-            });
+//            $('#datetimefim').datetimepicker({
+//                icons: {time: 'far fa-clock'},
+//                ignoreReadonly: true,
+//                format: 'DD/MM/YYYY HH:mm:ss'
+//            });
+//            $('#datetimeinicio').datetimepicker({
+//                icons: {time: 'far fa-clock'},
+//                ignoreReadonly: true,
+//                format: 'DD/MM/YYYY HH:mm:ss'
+//            });
+//            document.getElementById('dataInicio').readOnly = true;
+//            document.getElementById('dataFim').readOnly = true;
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'DD/MM/YYYY hh:mm:ss A'
+                }, ignoreReadonly: true
+            })
         });
     </script>
 

@@ -27,8 +27,6 @@
     <link rel="stylesheet" type="text/css" href="jsp/plugins/toastr/toastr.min.css">
     <!-- daterange picker -->
     <!--  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">-->
-    <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" type="text/css" href="jsp/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
 
     <style>
         .hidden{
