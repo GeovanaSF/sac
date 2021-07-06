@@ -99,9 +99,14 @@ public class Login extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (DAOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("/jsp/erro.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("/jsp/erro.jsp").forward(request, response);
+        } catch (Exception ex) {
+            request.setAttribute("mensagem", "Erro: " + ex.getMessage());
+            request.getRequestDispatcher("/jsp/erro.jsp").forward(request, response);
         }
     }
 
@@ -119,10 +124,15 @@ public class Login extends HttpServlet {
 
         try {
             processRequest(request, response);
-        } catch (DAOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }  catch (DAOException ex) {
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("/jsp/erro.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("mensagem", "Erro no DAO: " + ex.getMessage());
+            request.getRequestDispatcher("/jsp/erro.jsp").forward(request, response);
+        } catch (Exception ex) {
+            request.setAttribute("mensagem", "Erro: " + ex.getMessage());
+            request.getRequestDispatcher("/jsp/erro.jsp").forward(request, response);
         }
     }
 

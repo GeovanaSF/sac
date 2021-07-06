@@ -13,12 +13,16 @@ import java.sql.*;
  */
 
 public final class ConnectionFactory implements AutoCloseable {
+//postgres://ouytnspi:jzcpmqe4b55hmZBNkA0U_VEfKpzBArGd@batyr.db.elephantsql.com/ouytnspi
+//    private static final String DRIVER = "org.postgresql.Driver";
+//    private static final String URL = "jdbc:postgresql://localhost:5432/db_sac";
+//    private static final String LOGIN = "sac_user";
+//    private static final String SENHA = "sac_123";
 
     private static final String DRIVER = "org.postgresql.Driver";
-    private static final String URL = "jdbc:postgresql://localhost:5432/db_sac";
-    private static final String LOGIN = "sac_user";
-    private static final String SENHA = "sac_123";
-
+    private static final String URL = "jdbc:postgresql://batyr.db.elephantsql.com/ouytnspi";
+    private static final String LOGIN = "ouytnspi";
+    private static final String SENHA = "jzcpmqe4b55hmZBNkA0U_VEfKpzBArGd";
     private static Connection con = null;
 
     public static Connection getConnection() throws DAOException {

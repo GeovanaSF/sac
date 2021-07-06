@@ -47,21 +47,18 @@ public class PessoaDAO implements DAO<Pessoa> {
     public Pessoa getById(int id) throws DAOException, SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement(QUERY_GET + " WHERE pessoa_id = ?");
-            ps.setInt(1, id);
 
-            rs = ps.executeQuery();
+        ps = conn.prepareStatement(QUERY_GET + " WHERE pessoa_id = ?");
+        ps.setInt(1, id);
 
-            if (rs.next()) {
-                return new Pessoa(rs.getInt("pessoa_id"), rs.getInt("perfil_id"),
-                        rs.getInt("endereco_id"), rs.getString("nome"),
-                        rs.getString("cpf"), rs.getString("telefone"));
-            }
-        } catch (SQLException ex) {
-        } catch (Exception ex) {
+        rs = ps.executeQuery();
 
+        if (rs.next()) {
+            return new Pessoa(rs.getInt("pessoa_id"), rs.getInt("perfil_id"),
+                    rs.getInt("endereco_id"), rs.getString("nome"),
+                    rs.getString("cpf"), rs.getString("telefone"));
         }
+
         return null;
     }
 
@@ -128,21 +125,18 @@ public class PessoaDAO implements DAO<Pessoa> {
     public Pessoa getSingle(String email) throws DAOException, SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement(QUERY_GET + " WHERE nome like '%?%'");
-            ps.setString(1, email);
 
-            rs = ps.executeQuery();
+        ps = conn.prepareStatement(QUERY_GET + " WHERE nome like '%?%'");
+        ps.setString(1, email);
 
-            if (rs.next()) {
-                return new Pessoa(rs.getInt("pessoa_id"), rs.getInt("perfil_id"),
-                        rs.getInt("endereco_id"), rs.getString("nome"),
-                        rs.getString("cpf"), rs.getString("telefone"));
-            }
-        } catch (SQLException ex) {
-        } catch (Exception ex) {
+        rs = ps.executeQuery();
 
+        if (rs.next()) {
+            return new Pessoa(rs.getInt("pessoa_id"), rs.getInt("perfil_id"),
+                    rs.getInt("endereco_id"), rs.getString("nome"),
+                    rs.getString("cpf"), rs.getString("telefone"));
         }
+
         return null;
     }
 
@@ -151,19 +145,16 @@ public class PessoaDAO implements DAO<Pessoa> {
         List<Pessoa> lista = null;
         Statement ps = null;
         ResultSet rs = null;
-        try {
-            ps = conn.createStatement();
-            rs = ps.executeQuery(QUERY_GET);
-            lista = new ArrayList<>();
-            while (rs.next()) {
-                lista.add(new Pessoa(rs.getInt("pessoa_id"), rs.getInt("perfil_id"),
-                        rs.getInt("endereco_id"), rs.getString("nome"),
-                        rs.getString("cpf"), rs.getString("telefone")));
-            }
-        } catch (SQLException ex) {
-        } catch (Exception ex) {
 
+        ps = conn.createStatement();
+        rs = ps.executeQuery(QUERY_GET);
+        lista = new ArrayList<>();
+        while (rs.next()) {
+            lista.add(new Pessoa(rs.getInt("pessoa_id"), rs.getInt("perfil_id"),
+                    rs.getInt("endereco_id"), rs.getString("nome"),
+                    rs.getString("cpf"), rs.getString("telefone")));
         }
+
         return lista;
     }
 
@@ -231,15 +222,12 @@ public class PessoaDAO implements DAO<Pessoa> {
     public Usuario getUserByEmail(String login) throws DAOException, SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement(QUERY_GETUSUARIO);
-            ps.setString(1, login);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return new Usuario(rs.getInt("pessoa_id"),
-                        rs.getString("email"), rs.getString("senha"), rs.getString("salt"), rs.getInt("perfil_id"));
-            }
-        } catch (SQLException ex) {
+        ps = conn.prepareStatement(QUERY_GETUSUARIO);
+        ps.setString(1, login);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            return new Usuario(rs.getInt("pessoa_id"),
+                    rs.getString("email"), rs.getString("senha"), rs.getString("salt"), rs.getInt("perfil_id"));
         }
 
         return null;
