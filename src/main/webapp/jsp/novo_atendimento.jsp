@@ -108,7 +108,7 @@
                                 <h3 class="m-0"> Atendimento</h3>
                             </div>
                             <div class="col-sm-2">
-                                <a href="MeusAtendimentos" class="nav-link btn btn-default">Voltar</a>
+                                <a href="${usuarioLogado.perfil_Id == 1 ? "MeusAtendimentos" : "TodosAtendimentosAberto"}" class="nav-link btn btn-default">Voltar</a>
                             </div>
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
