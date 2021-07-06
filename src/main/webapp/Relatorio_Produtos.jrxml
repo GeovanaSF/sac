@@ -3,16 +3,6 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Relatorio_Produtos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="47826abf-13a6-4ee2-86b4-0589d25e6124">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SAC"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<queryString>
-		<![CDATA[select p.nome as produto, c.nome as categoria, count(a.produto_id) quantidade from atendimento a
-join produto p on a.produto_id = p.produto_id
-join categoria c on p.categoria_id=c.categoria_id
-join tipoatendimento ta on a.tipoatendimento_id=ta.tipoatendimento_id
-group by p.nome, ta.nome, c.nome
-having ta.nome='Reclamação'
-order by quantidade desc
-limit 3]]>
-	</queryString>
 	<field name="produto" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="produto"/>
 		<property name="com.jaspersoft.studio.field.label" value="produto"/>

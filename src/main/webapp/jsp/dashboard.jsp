@@ -207,7 +207,49 @@
                         </c:if>
                         <!--GERENTE: INFORMA QUANTIDADE DE ATENDIMENTOS EFETUADOS; QTD DE ATEND ABERTOS COM PERCENTAGEM EM RELAÇÃO AO TOTAL; SEPARADOS POR CATEGORIA-->
                         <c:if test="${usuarioLogado.perfil_Id == 3}"> 
-                           
+                            <div class="row">
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-calendar-check"></i></span>
+
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Atendimentos efetuados</span>
+                                            <span class="info-box-number">
+                                                ${consulta.atendimentos_efetuados}
+                                            </span>
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-calendar-plus"></i></span>
+
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Atendimentos em aberto</span>
+                                            <span class="info-box-number">
+                                                ${consulta.atendimentos_abertos}
+                                                <small>${consulta.atendimentos_abertos_porcentagem}%</small>
+                                            </span>
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <c:forEach var="item" items="${consulta.getDadosDashboard()}">
+                                    <div class="col-sm-2 col-3">
+                                        <div class="description-block border-right">
+                                            <h5 class="description-header">${item.quantidade_aberto == null ? 0 : item.quantidade_aberto}/${item.quantidade_total}</h5>
+                                            <span class="description-text">${item.tipoatendimento}</span>
+                                        </div>
+                                        <!-- /.description-block -->
+                                    </div>
+                                    <!-- /.col -->
+                                </c:forEach>
+                            </div>
                         </c:if>
                     </div>
                     <!-- /.row -->

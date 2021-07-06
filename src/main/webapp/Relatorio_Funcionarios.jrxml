@@ -230,7 +230,7 @@
 				</reportElement>
 				<text><![CDATA[Estado:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="352" y="80" width="70" height="30" uuid="11d5bbef-7a67-4638-97a2-c3538038b12c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9f37bc10-f379-4df1-a085-592a79d410e9"/>
 				</reportElement>

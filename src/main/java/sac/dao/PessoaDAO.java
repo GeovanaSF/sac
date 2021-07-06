@@ -108,7 +108,7 @@ public class PessoaDAO implements DAO<Pessoa> {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        ps = conn.prepareStatement(QUERY_GETPESSOA + " WHERE P.perfil_id = ?");
+        ps = conn.prepareStatement(QUERY_GETPESSOA + " WHERE P.perfil_id <> ?");
         ps.setInt(1, id);
 
         rs = ps.executeQuery();

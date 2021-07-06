@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sac.domain.Atendimento;
 import sac.model.Atendimentos;
+import sac.model.DadosDashboard;
 
 /**
  *
@@ -46,6 +47,17 @@ public class AtendimentoDAO implements DAO<Atendimento> {
     private static final String QUERY_UPDATECLIENTE = "UPDATE Atendimento SET produto_id=?, tipoatendimento_id=?, descricao=? where atendimento_id=?";
     private static final String QUERY_UPDATEATEND = "UPDATE Atendimento SET funcionario_id=?, datafinalizacao=?, situacao=?, solucao=? where atendimento_id=?";
     private static final String QUERY_DELETE = "DELETE FROM Atendimento WHERE atendimento_id = ?";
+    private static final String QUERY_DASHBOARD = "select n1.tipoatendimento_id,n1.nome,n1.quantidade_total,n2.quantidade_aberto from\n" +
+"	(select ta.tipoatendimento_id, ta.nome, count(aa.atendimento_id) as quantidade_total from tipoatendimento ta \n" +
+"		left join atendimento aa on ta.tipoatendimento_id=aa.tipoatendimento_id\n" +
+"		group by ta.tipoatendimento_id, ta.nome) n1\n" +
+"	left join \n" +
+"	(select aa.tipoatendimento_id, count(aa.atendimento_id) as quantidade_aberto from atendimento aa\n" +
+"	 	where aa.situacao=1 \n" +
+"	 	group by aa.tipoatendimento_id,aa.situacao) n2\n" +
+"	 on n1.tipoatendimento_id=n2.tipoatendimento_id order by n1.nome";
+    private static final String QUERY_QUANTIDADE = "select count(aa.atendimento_id) as quantidade from atendimento aa\n" +
+                                                    "where aa.situacao = ?";
     private final Connection conn;
 
     public AtendimentoDAO(Connection conn) throws DAOException {
@@ -67,6 +79,24 @@ public class AtendimentoDAO implements DAO<Atendimento> {
                         rs.getInt("produto_id"), rs.getInt("tipoatendimento_id"), rs.getTimestamp("dataCriacao"),
                         rs.getTimestamp("dataFinalizacao"), rs.getInt("situacao"),
                         rs.getString("descricao"), rs.getString("solucao"));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public Integer getQuantidadeBySituacao(int id) {
+        try {
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            ps = conn.prepareStatement(QUERY_QUANTIDADE);
+            ps.setInt(1, id);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("quantidade");
             }
 
         } catch (SQLException ex) {
@@ -115,6 +145,25 @@ public class AtendimentoDAO implements DAO<Atendimento> {
                         rs.getString("funcionario"), rs.getString("dataCriacao"),
                         rs.getString("dataFinalizacao"), rs.getString("produto"),
                         rs.getString("situacao"),rs.getInt("situacao_id")));
+            }
+            return lista;
+        } catch (SQLException ex) {
+            Logger.getLogger(AtendimentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<DadosDashboard> getListAtendimentosTipoAtendimento() {
+        try {
+            List<DadosDashboard> lista = null;
+            Statement ps = null;
+            ResultSet rs = null;
+            ps = conn.createStatement();
+            rs = ps.executeQuery(QUERY_DASHBOARD);
+            lista = new ArrayList<>();
+            while (rs.next()) {
+                lista.add(new DadosDashboard(rs.getInt("tipoatendimento_id"), rs.getString("nome"),
+                        rs.getInt("quantidade_total"),rs.getInt("quantidade_aberto")));
             }
             return lista;
         } catch (SQLException ex) {

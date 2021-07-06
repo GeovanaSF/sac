@@ -21,6 +21,7 @@ import sac.dao.DAOException;
 import sac.domain.Usuario;
 import sac.model.Atendimentos;
 import sac.model.Consultas;
+import sac.model.DadosDashboard;
 
 /**
  *
@@ -39,9 +40,9 @@ public class Dashboard extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, DAOException {
-
+        
         Connection connection = ConnectionFactory.getConnection();
-
+        
         AtendimentoDAO atDAO = new AtendimentoDAO(connection);
         Consultas consulta = new Consultas();
         Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
@@ -60,10 +61,17 @@ public class Dashboard extends HttpServlet {
             consulta.setAtendimentos(lista);
         } else if (user.getPerfil_Id() == 3) {
             //carrega dados do gerente
+            consulta.setAtendimentos_efetuados(atDAO.getQuantidadeBySituacao(2));
+            consulta.setAtendimentos_abertos(atDAO.getQuantidadeBySituacao(1));
+            int total = consulta.getAtendimentos_abertos() + consulta.getAtendimentos_efetuados();
+            consulta.setAtendimentos_abertos_porcentagem(total == 0 ? 0 : (consulta.getAtendimentos_abertos() * 100) / total);
+            
+            List<DadosDashboard> dados = atDAO.getListAtendimentosTipoAtendimento();
+            consulta.setDadosDashboard(dados);
         }
         
         request.setAttribute("consulta", consulta);
-
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/dashboard.jsp");
         dispatcher.forward(request, response);
     }

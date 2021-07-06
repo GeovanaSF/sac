@@ -139,7 +139,7 @@ public class Novo extends HttpServlet {
                     url = "/jsp/funcionario.jsp";
                     try {
                         PessoaDAO pessoaDAO = new PessoaDAO(connection);
-                        List<sac.model.Pessoa> funcionarios = pessoaDAO.getPessoaByPerfilId(2);
+                        List<sac.model.Pessoa> funcionarios = pessoaDAO.getPessoaByPerfilId(1);
                         novo.setFuncionarios(funcionarios);
                     } catch (SQLException ex) {
                         Logger.getLogger(Novo.class.getName()).log(Level.SEVERE, null, ex);

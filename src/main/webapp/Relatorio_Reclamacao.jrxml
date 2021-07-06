@@ -140,7 +140,7 @@ WHERE
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{datacriacao}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="80" y="60" width="450" height="30" uuid="e37a399e-ab6c-4559-8920-19b0b42042d2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d74fba7a-7616-4e68-98d9-1d9b76fb7433"/>
 				</reportElement>
@@ -199,7 +199,7 @@ WHERE
 			<line>
 				<reportElement x="-10" y="150" width="560" height="1" uuid="fa57570c-d4b9-4b55-9e2f-caec93f955b6"/>
 			</line>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="80" y="100" width="450" height="30" uuid="c29a2d22-1449-4240-9843-992febd8efdd">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cc1f538e-3ddc-475b-b465-aca8538f1cf8"/>
 				</reportElement>
