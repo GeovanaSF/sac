@@ -1,9 +1,3 @@
-<%-- 
-    Document   : novo_funcionario
-    Created on : 03/06/2021, 20:55:37
-    Author     : geova
---%>
-
 <%@page import="sac.util.Erro"%>
 <%@page import="java.util.List"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

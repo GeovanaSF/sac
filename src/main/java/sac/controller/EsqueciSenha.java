@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class EsqueciSenha extends HttpServlet {
 

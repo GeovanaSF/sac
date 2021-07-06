@@ -11,7 +11,7 @@ import sac.domain.Produto;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Novo {
     public List<Pessoa> funcionarios;

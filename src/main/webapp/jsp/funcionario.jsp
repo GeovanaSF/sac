@@ -1,10 +1,3 @@
-<%-- 
-    Document   : funcionario
-    Created on : 23/06/2021, 21:31:37
-    Author     : geova
---%>
-
-
 <%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>

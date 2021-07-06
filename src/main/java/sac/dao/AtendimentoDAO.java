@@ -20,7 +20,7 @@ import sac.model.DadosDashboard;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class AtendimentoDAO implements DAO<Atendimento> {
 

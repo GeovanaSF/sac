@@ -24,7 +24,7 @@ import sac.dao.DAOException;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Cidade extends HttpServlet {
 

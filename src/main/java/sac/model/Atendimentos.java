@@ -6,7 +6,6 @@
 package sac.model;
 
 import java.util.Date;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Atendimentos {
 

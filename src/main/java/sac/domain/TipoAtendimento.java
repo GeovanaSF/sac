@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class TipoAtendimento implements Serializable{
     @Id    

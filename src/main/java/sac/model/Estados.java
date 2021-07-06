@@ -11,7 +11,7 @@ import sac.domain.Estado;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Estados {
     public List<Estado> estados;

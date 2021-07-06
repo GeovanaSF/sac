@@ -18,7 +18,7 @@ import sac.domain.Produto;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class ProdutoDAO implements DAO<Produto> {
 

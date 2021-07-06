@@ -1,9 +1,3 @@
-<%-- 
-    Document   : esqueci_senha
-    Created on : 03/06/2021, 19:20:45
-    Author     : geova
---%>
-
 <!DOCTYPE html>
 <html>
     <head>        

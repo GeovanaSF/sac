@@ -23,7 +23,7 @@ import sac.util.Retorno;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Excluir extends HttpServlet {
 

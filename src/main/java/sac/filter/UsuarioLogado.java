@@ -18,11 +18,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import sac.domain.Usuario;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class UsuarioLogado implements Filter {
 

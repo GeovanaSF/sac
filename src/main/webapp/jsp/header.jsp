@@ -1,9 +1,3 @@
-<%-- 
-    Document   : header
-    Created on : 03/06/2021, 17:01:18
-    Author     : geova
---%>
-
 <head>
     <base href="./">
     <meta charset="utf-8">

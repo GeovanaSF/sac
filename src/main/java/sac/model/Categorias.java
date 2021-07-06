@@ -7,11 +7,10 @@ package sac.model;
 
 import java.util.List;
 import sac.domain.Categoria;
-import sac.domain.Estado;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Categorias {
     

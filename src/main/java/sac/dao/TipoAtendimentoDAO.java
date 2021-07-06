@@ -14,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sac.domain.Atendimento;
 import sac.domain.TipoAtendimento;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class TipoAtendimentoDAO implements DAO<TipoAtendimento>{
 private static final String QUERY_GET = "select tipoatendimento_id, nome from tipoAtendimento";

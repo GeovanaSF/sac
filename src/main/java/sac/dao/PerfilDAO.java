@@ -15,7 +15,7 @@ import sac.domain.Perfil;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class PerfilDAO {
     private final Connection conn;

@@ -31,7 +31,7 @@ import sac.util.Password;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Registrar extends HttpServlet {
 

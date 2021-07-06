@@ -15,7 +15,7 @@ import sac.domain.Cidade;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class CidadeDAO {
     

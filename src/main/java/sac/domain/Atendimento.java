@@ -12,7 +12,7 @@ import javax.persistence.Id;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Atendimento implements Serializable {
 

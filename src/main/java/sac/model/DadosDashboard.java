@@ -7,7 +7,7 @@ package sac.model;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class DadosDashboard {
     private int tipoatendimento_id;

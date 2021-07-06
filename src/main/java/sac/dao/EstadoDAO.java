@@ -12,11 +12,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import sac.domain.Estado;
-import sac.domain.Usuario;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class EstadoDAO {
 

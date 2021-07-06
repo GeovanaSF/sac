@@ -1,9 +1,3 @@
-<%-- 
-    Document   : register
-    Created on : 03/06/2021, 16:59:11
-    Author     : geova
---%>
-
 <%@page import="sac.util.Erro"%>
 <%@page import="sac.dao.EstadoDAO"%>
 <%@page import="sac.domain.Estado"%>

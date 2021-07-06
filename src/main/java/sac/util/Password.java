@@ -14,7 +14,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 /**
  *
- * @author geova
+ * @author 
  */
 public class Password {
         private static final Random RANDOM = new SecureRandom();

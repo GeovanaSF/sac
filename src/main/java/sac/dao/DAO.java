@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 /**
  *
- * @author geova
+ * @author 
  * @param <T>
  */
 public interface DAO<T> {

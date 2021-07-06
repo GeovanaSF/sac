@@ -7,7 +7,7 @@ package sac.domain;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Produto {
     private int produto_id;

@@ -24,7 +24,7 @@ import sac.util.Password;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Login extends HttpServlet {
 

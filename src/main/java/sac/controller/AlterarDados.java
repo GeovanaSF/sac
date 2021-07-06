@@ -33,7 +33,7 @@ import sac.util.Password;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class AlterarDados extends HttpServlet {
 

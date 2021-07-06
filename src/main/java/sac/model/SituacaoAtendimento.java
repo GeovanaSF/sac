@@ -7,7 +7,7 @@ package sac.model;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public enum SituacaoAtendimento {
     Aberto(1), Finalizado(2);

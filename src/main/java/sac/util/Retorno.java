@@ -7,7 +7,7 @@ package sac.util;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Retorno {
     public boolean sucesso;

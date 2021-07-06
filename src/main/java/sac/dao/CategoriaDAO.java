@@ -18,7 +18,7 @@ import sac.domain.Categoria;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class CategoriaDAO implements DAO<Categoria> {
 

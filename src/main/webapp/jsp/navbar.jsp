@@ -1,9 +1,3 @@
-<%-- 
-    Document   : navbar
-    Created on : 03/06/2021, 20:48:54
-    Author     : 
---%>
-
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">

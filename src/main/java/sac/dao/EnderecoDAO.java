@@ -16,7 +16,7 @@ import sac.domain.Endereco;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class EnderecoDAO implements DAO<Endereco> {
 

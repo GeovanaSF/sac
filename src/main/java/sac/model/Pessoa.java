@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Pessoa implements Serializable {
 

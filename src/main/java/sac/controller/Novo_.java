@@ -37,7 +37,7 @@ import sac.util.Password;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Novo_ extends HttpServlet {
 

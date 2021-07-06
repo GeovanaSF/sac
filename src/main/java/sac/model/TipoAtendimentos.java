@@ -10,7 +10,7 @@ import sac.domain.TipoAtendimento;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class TipoAtendimentos {
     private List<TipoAtendimento> tipoAtendimentos;

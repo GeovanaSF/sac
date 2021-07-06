@@ -10,7 +10,7 @@ import sac.domain.Produto;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class Produtos {
     private List<Produto> produtos;

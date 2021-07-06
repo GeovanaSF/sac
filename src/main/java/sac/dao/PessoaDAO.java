@@ -17,7 +17,7 @@ import sac.domain.Usuario;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class PessoaDAO implements DAO<Pessoa> {
 

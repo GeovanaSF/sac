@@ -7,7 +7,7 @@ package sac.dao;
 
 /**
  *
- * @author geova
+ * @author 
  */
 public class DAOException extends Exception {
 

@@ -1,10 +1,3 @@
-<%-- 
-    Document   : atendimento
-    Created on : 24/06/2021, 22:26:32
-    Author     : geova
---%>
-
-
 <%@page import="sac.util.Erro"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>

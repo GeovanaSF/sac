@@ -9,7 +9,7 @@ import java.sql.*;
 
 /**
  *
- * @author geova
+ * @author 
  */
 
 public final class ConnectionFactory implements AutoCloseable {
